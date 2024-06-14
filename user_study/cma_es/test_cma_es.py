@@ -1,9 +1,11 @@
 from cmaes import CMA
 import numpy as np
 
+#defining a function
 def quadratic(x1, x2):
     return (x1 - 3) ** 2 + (10 * (x2 + 2)) ** 2
 
+#asking users for ranking 5 options 10 times
 if __name__ == "__main__":
     optimizer = CMA(mean=np.zeros(2), sigma=1.3, population_size=5)
 
