@@ -1,5 +1,9 @@
+
+#voice-specific files
 *model.pth
 *speaker_info.pkl
+id*.wav
+
 
 *.DS_Store
 
