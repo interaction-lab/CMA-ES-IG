@@ -13,3 +13,7 @@ in the preference learning process. The overarching structure for each of these 
 1. Generate or collect a diverse set of behaviors
 2. Generate a representation function for these behaviors
 3. Learn a user's preference over this representation
+
+To run this study, make sure you have the files for the specific application. Place those files in the static/data folder.
+
+Then run ` python3 start_interface.py`

@@ -3,7 +3,7 @@
 *model.pth
 *speaker_info.pkl
 id*.wav
-
+applications/blossom_voice/data/generated_voice
 
 *.DS_Store
 
