@@ -6,6 +6,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>User Preference Study</title>
   <style>
+
+    #loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black */
+      display: none; /* initially hidden */
+      justify-content: center;
+      align-items: center;
+      z-index: 1000; /* ensure it is above other elements */
+    }
+
+    #loading-overlay::after {
+      content: "Loading...";
+      color: white;
+      font-size: 2em;
+    }
+
+    
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -131,22 +152,25 @@
       align-items: center;
       width: 100%;
       max-width: 1200px;
-      height: auto;
+      height: 180px;
       border: 2px solid #333;
       flex-wrap: wrap;
       margin-bottom: 20px;
     }
 
     .tile {
-      width: 130px;
-      height: 130px;
+      width: 13vh;
+      height: 13vh;
+
       background-color: #ccc;
       border: 2px solid #666;
-      margin: 10px;
+      margin: 0px;
       cursor: pointer;
       display: flex;
       justify-content: center;
+      /* Center horizontally */
       align-items: center;
+      /* Center vertically */
     }
 
     .tile img {
@@ -192,7 +216,7 @@
 </head>
 
 <body>
-
+  <div id="loading-overlay"></div>
   <div id="main-container">
 
     <div id="video-container">
@@ -202,42 +226,33 @@
         waits for a command. -->
       </div>
 
-      <div id="video-panel">
+      <!-- <div id="video-panel">
       <video controls>
         <source src="/static/data/StudyVideos.mp4" type="video/mp4">
         Your browser does not support the video tag.
       </video>
-      </div>
-
-      <!-- <div id="kuri-panel">
-        <div class="image-container">
-          <img src="./Kuri.png" alt="Image of the Kuri Robot">
-        </div>
-        <div class="caption">
-          This is the robot your signal will be played on.
-        </div>
       </div> -->
 
     </div>
 
     <div id="option-display">
-      <div class="option-box" droppable="true">
+      <div class="option-box" id="worst" droppable="true">
         <div class="option-label">Worst</div>
       </div>
-      <div class="option-box" droppable="true"></div>
-      <div class="option-box" droppable="true"></div>
-      <div class="option-box" droppable="true"></div>
-      <div class="option-box" droppable="true">
+      <div class="option-box" id="middle1" droppable="true"></div>
+      <div class="option-box" id="middle2" droppable="true"></div>
+      <div class="option-box" id="middle3" droppable="true"></div>
+      <div class="option-box" id="best" droppable="true">
         <div class="option-label">Best</div>
       </div>
     </div>
-
+    
     <div id="tiles-container">
-      <div class="tile" draggable="true"></div>
-      <div class="tile" draggable="true"></div>
-      <div class="tile" draggable="true"></div>
-      <div class="tile" draggable="true"></div>
-      <div class="tile" draggable="true"></div>
+      <div class="tile" id="tile1" draggable="true"></div>
+      <div class="tile" id="tile2" draggable="true"></div>
+      <div class="tile" id="tile3" draggable="true"></div>
+      <div class="tile" id="tile4" draggable="true"></div>
+      <div class="tile" id="tile5" draggable="true"></div>
     </div>
 
     <div id="button-container">
@@ -252,24 +267,194 @@
   <script>
     // Add your JavaScript here
 
+    /*
+        Socket Functionality
+    */
     var socket = io.connect('http://localhost:8001');
-        
-        socket.on('connect', function() {
-            console.log('Connected to server');
-        });
+      socket.on('connect', function() {
+          console.log('Connected to server');
+          sendMessage('');
+          
+      });
+      socket.on('query', function(data) {
+          //receive the set of items to rank from the preference learning engine
+          console.log('Received message:', data);
+          closeLoadingOverlay();
+          updateOptions(data);
+      });
 
-        socket.on('query', function(data) {
-            console.log('Received message:', data);
-        });
 
-        function sendMessage() {
-            var message = {
-                name: 'TestUser',
-                action_type: 'TestAction'
-            };
-            socket.emit('ranking_results', message);
+
+
+    /*
+        Communication Functionality
+    */
+
+    //Update the tiles with the options
+    function updateOptions(options) {
+      const tiles = document.querySelectorAll('.tile');
+      
+      tiles.forEach((tile, index) => {
+          const key = `index${index}`;
+          if (options[key]) {
+            const image = options[key];
+            tile.innerHTML = `<img src="/static/data/${image}" alt="Option Image">`;
+            tile.dataset.index = index;
+          } else {
+            tile.innerHTML = '';
+            delete tile.dataset.index;
+          }
+        });
+      }
+
+    function getRanking() {
+      const rankedTiles = document.querySelectorAll('.option-box .tile');
+      const ranking = Array.from(rankedTiles).map(tile => tile.dataset.index);
+      return ranking;
+    }
+
+    function sendMessage(ranking) {
+        message = {
+          'type': 'ranking',
+          'data': ranking
         }
+        socket.emit('ranking_results', message);
+    }
+      
+    function clickButton() {
+      message = {
+          'type': 'play',
+          'data': this.children[0].src.slice(0, -4)
+        }
+        socket.emit('ranking_results', message);
+      // if (modality == 'visual') {
+      //   set_video(this.children[0].src.slice(0, -4) + '.mp4');
+      // }
+      // else if (modality == 'auditory') {
+      //   set_audio(this.children[0].src.slice(0, -4) + '.wav');
+      // }
+      // else if (modality == 'kinetic') {
+      //   set_video(this.children[0].src.slice(0, -4) + '.mp4');
+      // }
+    }
 
+
+    /*
+      Dragging functionality
+    */
+    const optionBoxes = document.querySelectorAll('.option-box');
+    const tiles = document.querySelectorAll('.tile');
+
+
+    // Store original position of tiles
+    const originalTiles = Array.from(tiles).map(tile => ({
+      tile,
+      parent: tile.parentNode,
+      nextSibling: tile.nextSibling
+    }));
+
+    tiles.forEach(tile => {
+      tile.addEventListener('dragstart', dragStart);
+      tile.addEventListener('dragend', dragEnd);
+      tile.addEventListener('click', clickButton);
+    });
+
+    function dragStart() {
+      this.classList.add('dragging');
+    }
+
+    function dragEnd() {
+      this.classList.remove('dragging');
+    }
+
+    
+
+    optionBoxes.forEach(box => {
+      box.addEventListener('dragover', dragOver);
+      box.addEventListener('dragenter', dragEnter);
+      box.addEventListener('dragleave', dragLeave);
+      box.addEventListener('drop', dragDropOptionDisplay);
+    });
+
+
+    function dragOver(e) {
+      e.preventDefault();
+    }
+
+    function dragEnter(e) {
+      e.preventDefault();
+      this.classList.add('hovered');
+    }
+
+    function dragLeave() {
+      this.classList.remove('hovered');
+    }
+
+    function dragDropOptionDisplay() {
+      const draggedTile = document.querySelector('.tile.dragging');
+      const targetBox = this;
+      const sourceBox = draggedTile.parentNode;
+
+      // If the target box is empty, simply append the dragged tile
+      if (!targetBox.querySelector('.tile')) {
+        targetBox.appendChild(draggedTile);
+      } else {
+        // Swap the tiles by replacing them in their respective containers
+        const targetTile = targetBox.querySelector('.tile');
+        targetBox.removeChild(targetTile);
+        sourceBox.appendChild(targetTile);
+        targetBox.appendChild(draggedTile);
+      }
+
+      // Remove the 'hovered' class from the target box
+      targetBox.classList.remove('hovered');
+    }
+
+    /*
+      RESET button functionality
+    */
+    const resetButton = document.getElementById('reset-button');
+
+    resetButton.addEventListener('click', resetTiles);
+
+    function resetTiles() {
+      originalTiles.forEach(data => {
+        const { tile, parent, nextSibling } = data;
+        parent.insertBefore(tile, nextSibling);
+      });
+    }
+
+    /*
+      SUBMIT button functionality
+    */
+    const submitButton = document.getElementById('submit-button');
+    submitButton.addEventListener('click', submitRanking);
+    function submitRanking() {
+      //todo make sure all options are ranked
+      ranking = getRanking();
+      if (ranking.length < 5) {
+        alert("Please rank all options");
+        return;
+      }
+      showLoadingOverlay();
+      resetTiles();
+      sendMessage(ranking);
+
+    }
+
+/*
+      LOADING functionality
+    */
+  
+    function showLoadingOverlay() {
+      const overlay = document.getElementById('loading-overlay');
+      overlay.style.display = 'flex'; // display the overlay as flex to center content
+    }
+
+    function closeLoadingOverlay() {
+      const overlay = document.getElementById('loading-overlay');
+      overlay.style.display = 'none'; // hide the overlay
+    }
   </script>
 
 </body>

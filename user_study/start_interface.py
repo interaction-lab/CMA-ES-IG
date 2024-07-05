@@ -17,14 +17,16 @@ def index():
 
 @socketio.on('ranking_results')
 def handle_message(message):
-    print(f"received to {message['name']}: {message['action_type']}")
+    # print(f"received to {message['name']}: {message['action_type']}")
     input_queue.put(message)
     response = output_queue.get()
     emit('query', response, broadcast=True)
 
 
+
 if __name__ == '__main__':
-    from worker import worker
+    from preference_engine import worker
+
     worker_process = Process(target=worker, args=(input_queue, output_queue))
     worker_process.start()
     
