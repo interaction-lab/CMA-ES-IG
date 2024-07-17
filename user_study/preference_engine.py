@@ -1,4 +1,6 @@
 import time
+import csv
+import os
 
 class PreferenceLearner:
     '''
@@ -13,25 +15,75 @@ class PreferenceLearner:
         self.task = task
         self.method = method
 
+
+
     def handle_message(self, message):
         if message['type'] == 'play':
+            self.log_play_message(message['data'])
+
+            if self.task == 'gesture':
+                self.play_gestures(message['data'])
+
+
             print(f"User {self.pid} is playing {message['data']}")
+
         if message['type'] == 'ranking':
+            if len(message['data']) == 3:
+                self.log_rank_message(message['data'])
             return self.learn_preference(message['data'])
+
+    def log_play_message(self, data):
+        filename = f"./data/play{self.pid}.csv"
+        file_exists = os.path.isfile(filename)
+
+        with open(filename, mode='a', newline='') as csvfile:
+            csvwriter = csv.writer(csvfile)
+            if not file_exists:
+                csvwriter.writerow(['timestamp', 'pid', 'task', 'method', 'sequence', 'played_trajectory'])  # Write header if file does not exist
+            csvwriter.writerow([time.time(), 
+                                self.pid,
+                                self.task,
+                                self.method,
+                                self.times,
+                                data])
+            
+    def log_rank_message(self, data):
+        print(data)
+        filename = f"./data/ranking{self.pid}.csv"
+        file_exists = os.path.isfile(filename)
+
+        with open(filename, mode='a', newline='') as csvfile:
+            csvwriter = csv.writer(csvfile)
+            if not file_exists:
+                csvwriter.writerow(['timestamp', 'pid', 'task', 'method', 'sequence', 'trajectory1index', 'trajectory1rank','trajectory2index', 'trajectory2rank','trajectory3index', 'trajectory3rank'])  # Write header if file does not exist
+            csvwriter.writerow([time.time(), 
+                                self.pid,
+                                self.task,
+                                self.method,
+                                self.times,
+                                self.query[f'index{data[0]}'],
+                                0,
+                                self.query[f'index{data[1]}'],
+                                1,
+                                self.query[f'index{data[2]}'],
+                                2
+                                ])
+
+
+
 
     def learn_preference(self, data):
         # Simulate a preference learning task
 
         print(f'user ranked: {data}')
 
-        if len(data) != 5:
+        if len(data) != 3:
             structured_data = {
                 'index0': f'{self.times}.jpg',
                 'index1': f'{self.times+1}.jpg',
                 'index2': f'{self.times+2}.jpg',
-                'index3': f'{self.times+3}.jpg',
-                'index4': f'{self.times+4}.jpg',  
-            }   
+            }
+            self.query = structured_data   
             return structured_data
 
         time.sleep(2)
@@ -41,16 +93,16 @@ class PreferenceLearner:
         structured_data = {
             'index0': f'{self.times}.jpg',
             'index1': f'{self.times+1}.jpg',
-            'index2': f'{self.times+2}.jpg',
-            'index3': f'{self.times+3}.jpg',
-            'index4': f'{self.times+4}.jpg',  
+            'index2': f'{self.times+2}.jpg',  
         }
+        self.query = structured_data 
 
         return structured_data
     
 
 def worker(input_queue, output_queue):
-    pl = PreferenceLearner(1, 'handover', 'infogain')
+    #task can be 'handover' or 'gesture'
+    pl = PreferenceLearner(0, 'handover', 'infogain')
 
     while True:
         message = input_queue.get()

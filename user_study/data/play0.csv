@@ -1,0 +1,9 @@
+timestamp,pid,task,method,sequence,played_trajectory
+1720504155.628619,0,handover,infogain,0,http://localhost:8001/static/data/1
+1720504156.169098,0,handover,infogain,0,http://localhost:8001/static/data/1
+1720504157.029676,0,handover,infogain,0,http://localhost:8001/static/data/2
+1720504170.924974,0,handover,infogain,2,http://localhost:8001/static/data/3
+1720504171.705535,0,handover,infogain,2,http://localhost:8001/static/data/4
+1720504172.3362072,0,handover,infogain,2,http://localhost:8001/static/data/2
+1720504173.004425,0,handover,infogain,2,http://localhost:8001/static/data/3
+1720504179.269734,0,handover,infogain,2,http://localhost:8001/static/data/4

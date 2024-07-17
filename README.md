@@ -16,4 +16,4 @@ in the preference learning process. The overarching structure for each of these 
 
 To run this study, make sure you have the files for the specific application. Place those files in the static/data folder.
 
-Then run ` python3 start_interface.py`
+Then run `python3 start_interface.py`

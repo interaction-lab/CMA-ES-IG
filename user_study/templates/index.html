@@ -240,8 +240,8 @@
         <div class="option-label">Worst</div>
       </div>
       <div class="option-box" id="middle1" droppable="true"></div>
-      <div class="option-box" id="middle2" droppable="true"></div>
-      <div class="option-box" id="middle3" droppable="true"></div>
+      <!-- <div class="option-box" id="middle2" droppable="true"></div>
+      <div class="option-box" id="middle3" droppable="true"></div> -->
       <div class="option-box" id="best" droppable="true">
         <div class="option-label">Best</div>
       </div>
@@ -251,8 +251,8 @@
       <div class="tile" id="tile1" draggable="true"></div>
       <div class="tile" id="tile2" draggable="true"></div>
       <div class="tile" id="tile3" draggable="true"></div>
-      <div class="tile" id="tile4" draggable="true"></div>
-      <div class="tile" id="tile5" draggable="true"></div>
+      <!-- <div class="tile" id="tile4" draggable="true"></div>
+      <div class="tile" id="tile5" draggable="true"></div> -->
     </div>
 
     <div id="button-container">
@@ -318,7 +318,7 @@
           'type': 'ranking',
           'data': ranking
         }
-        socket.emit('ranking_results', message);
+        socket.emit('communication', message);
     }
       
     function clickButton() {
@@ -326,16 +326,7 @@
           'type': 'play',
           'data': this.children[0].src.slice(0, -4)
         }
-        socket.emit('ranking_results', message);
-      // if (modality == 'visual') {
-      //   set_video(this.children[0].src.slice(0, -4) + '.mp4');
-      // }
-      // else if (modality == 'auditory') {
-      //   set_audio(this.children[0].src.slice(0, -4) + '.wav');
-      // }
-      // else if (modality == 'kinetic') {
-      //   set_video(this.children[0].src.slice(0, -4) + '.mp4');
-      // }
+        socket.emit('communication', message);
     }
 
 
@@ -432,7 +423,7 @@
     function submitRanking() {
       //todo make sure all options are ranked
       ranking = getRanking();
-      if (ranking.length < 5) {
+      if (ranking.length < document.querySelectorAll('.option-box').length) {
         alert("Please rank all options");
         return;
       }

@@ -15,7 +15,7 @@ output_queue = Queue()
 def index():
     return render_template('index.html')
 
-@socketio.on('ranking_results')
+@socketio.on('communication')
 def handle_message(message):
     # print(f"received to {message['name']}: {message['action_type']}")
     input_queue.put(message)
