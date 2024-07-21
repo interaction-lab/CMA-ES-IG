@@ -3,7 +3,7 @@ from scipy.interpolate import CubicSpline
 from scipy.spatial.transform import Rotation as R
 from scipy.spatial.transform import Slerp
 
-def create_pose_interpolator(poses, quaternions):
+def create_pose_interpolator(poses):
     """
     Takes a list of robot poses and corresponding quaternions, and returns a function in terms of t
     that smoothly interpolates between the points using a spline for positions and SLERP for quaternions.
@@ -16,16 +16,10 @@ def create_pose_interpolator(poses, quaternions):
     num_poses = len(poses)
     t = np.linspace(0, 1, num_poses)
     poses = np.array(poses)
-    quaternions = np.array(quaternions)
     
     # Create spline interpolators for each dimension of the pose
     pose_interpolators = [CubicSpline(t, poses[:, i]) for i in range(poses.shape[1])]
     
-    # Create rotation objects for SLERP
-    rotations = R.from_quat(quaternions)
-    
-    # Create SLERP interpolator
-    slerp_interpolator = Slerp(t, rotations)
     
     def interpolated_pose(t_val):
         """
@@ -34,13 +28,11 @@ def create_pose_interpolator(poses, quaternions):
         :param t_val: A value of t between 0 and 1
         :return: Interpolated pose as a numpy array and quaternion as a list
         """
+        t_val = np.clip(t_val, 0, 1)
         # Interpolate the position using the splines
         interpolated_position = np.array([interpolator(t_val) for interpolator in pose_interpolators])
         
-        # Interpolate the quaternion using SLERP
-        interpolated_quaternion = slerp_interpolator(t_val).as_quat()
-        
-        return interpolated_position, interpolated_quaternion
+        return interpolated_position
     
     return interpolated_pose
 
@@ -63,10 +55,8 @@ if __name__ == "__main__":
         [0.7071, 0, 0, -0.7071]
     ]
 
-    pose_interpolator = create_pose_interpolator(poses, quaternions)
+    pose_interpolator = create_pose_interpolator(poses)
 
-    iposes, quaternions = pose_interpolator(np.linspace(0, 1, 30))
+    iposes= pose_interpolator(.1)
 
-    ax.scatter(poses[:, 0], poses[:, 1], zs=poses[:, 2])
-    ax.plot(iposes[0, :], iposes[1,:], zs=iposes[2,:])
-    plt.show()
+    print(iposes)
