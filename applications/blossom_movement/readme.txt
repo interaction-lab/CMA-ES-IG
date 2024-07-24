@@ -1,4 +1,4 @@
-generate gestures of up to 10 seconds?
+generate gestures of up to 10 seconds? -> 5 seconds
 
 have users design happy, sad, angry, surprised, bored, etc. based on Valence-Arousal Model
 
