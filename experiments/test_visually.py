@@ -34,7 +34,7 @@ from irlpreference.input_models import LuceShepardChoice, WeakPreferenceChoice
 from irlpreference.query_generation import InfoGainQueryGenerator, RandomQueryGenerator, VolumeRemovalQueryGenerator
 from irlpreference.reward_parameterizations import MonteCarloLinearReward
 
-from cmaes_generators import CMAESGenerator, CMAESIGGenerator
+from user_study.cmaes_generators import CMAESGenerator, CMAESIGGenerator
 
 dim_embedding = 2
 number_of_trials = 30

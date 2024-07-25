@@ -3,7 +3,6 @@ import scipy.optimize as opt
 import numpy as np
 from cmaes import CMA
 from sklearn.cluster import KMeans
-from sklearn_extra.cluster import KMedoids
 from scipy.spatial import ConvexHull
 
 def quadratic(x1, x2):
@@ -19,7 +18,6 @@ class CMAESGenerator:
 
     def get_query(self, number_queries, reward_parameterization=None, input_model=None):
         '''
-        
         '''
         queries = []
         for _ in range(number_queries):
@@ -70,20 +68,8 @@ class CMAESIGGenerator:
             x = np.clip(x, -1, 1)
             candidates.append(x)
 
-        
         kmeans = KMeans(n_clusters=number_queries, n_init="auto").fit(candidates)
-        
         query = kmeans.cluster_centers_
-
-        #uses boundary mediods selection from https://proceedings.mlr.press/v87/biyik18a/biyik18a.pdf
-        if self.use_boundary_mediods:
-            kmeans = KMedoids(n_clusters=number_queries, init='k-medoids++').fit(candidates)
-            query = kmeans.cluster_centers_
-                
-
-        
-        # print(query)
-        
 
         return query
 
@@ -92,14 +78,6 @@ class CMAESIGGenerator:
         '''
         '''
         answer = []
-
-        # for _ in range(self.optimizer.population_size):
-        #     x = self.optimizer.ask()
-
-        #     distances = [np.linalg.norm(solution - x ) for solution in solutions]
-
-        #     rank = (distances / np.sum(distances)).T @ rankings
-        #     answer.append((x, rank))
 
         for i, solution in enumerate(solutions):
             answer.append((solution, -rankings[i]))

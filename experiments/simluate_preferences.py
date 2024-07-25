@@ -5,8 +5,7 @@ import matplotlib.pyplot as plt
 from irlpreference.input_models import LuceShepardChoice, WeakPreferenceChoice
 from irlpreference.query_generation import InfoGainQueryGenerator, RandomQueryGenerator, VolumeRemovalQueryGenerator
 from irlpreference.reward_parameterizations import MonteCarloLinearReward
-
-from cmaes_generators import CMAESGenerator, CMAESIGGenerator
+from user_study.cmaes_generators import CMAESGenerator, CMAESIGGenerator
 
 fig, ax = plt.subplots(2)
 

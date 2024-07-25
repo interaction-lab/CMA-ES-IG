@@ -1,9 +1,9 @@
 timestamp,pid,task,method,sequence,played_trajectory
-1720504155.628619,0,handover,infogain,0,http://localhost:8001/static/data/1
-1720504156.169098,0,handover,infogain,0,http://localhost:8001/static/data/1
-1720504157.029676,0,handover,infogain,0,http://localhost:8001/static/data/2
-1720504170.924974,0,handover,infogain,2,http://localhost:8001/static/data/3
-1720504171.705535,0,handover,infogain,2,http://localhost:8001/static/data/4
-1720504172.3362072,0,handover,infogain,2,http://localhost:8001/static/data/2
-1720504173.004425,0,handover,infogain,2,http://localhost:8001/static/data/3
-1720504179.269734,0,handover,infogain,2,http://localhost:8001/static/data/4
+1721940033.0026078,0,blossom,CMA-ES,0,1170;best
+1721940053.0254724,0,blossom,CMA-ES,0,829
+1721940150.7036695,0,blossom,CMA-ES,2,1170;best
+1721940154.1208522,0,blossom,CMA-ES,2,1072
+1721940161.1613069,0,blossom,CMA-ES,2,326
+1721940167.8261242,0,blossom,CMA-ES,2,1070
+1721940178.255114,0,blossom,CMA-ES,3,1452
+1721940191.6995513,0,blossom,CMA-ES,3,1170;best

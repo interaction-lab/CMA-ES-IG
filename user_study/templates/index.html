@@ -187,7 +187,8 @@
     }
 
     #reset-button,
-    #submit-button {
+    #submit-button,
+    #viewbest-button {
       padding: 10px 20px;
       font-size: 16px;
       color: white;
@@ -211,6 +212,14 @@
 
     #submit-button:hover {
       background-color: #139e13;
+    }
+
+    #viewbest-button {
+      background-color: #128076;
+    }
+
+    #viewbest-button:hover {
+      background-color: #0b4d47;
     }
   </style>
 </head>
@@ -258,6 +267,7 @@
     <div id="button-container">
       <button id="submit-button">Submit</button>
       <button id="reset-button">Reset</button>
+      <button id="viewbest-button">View Best So Far</button>
     </div>
 
   </div>
@@ -298,7 +308,7 @@
           const key = `index${index}`;
           if (options[key]) {
             const image = options[key];
-            tile.innerHTML = `<img src="/static/data/${image}" alt="Option Image">`;
+            tile.innerHTML = `${image}`;
             tile.dataset.index = index;
           } else {
             tile.innerHTML = '';
@@ -309,7 +319,7 @@
 
     function getRanking() {
       const rankedTiles = document.querySelectorAll('.option-box .tile');
-      const ranking = Array.from(rankedTiles).map(tile => tile.dataset.index);
+      const ranking = Array.from(rankedTiles).map(tile => tile.innerHTML);
       return ranking;
     }
 
@@ -324,7 +334,7 @@
     function clickButton() {
       message = {
           'type': 'play',
-          'data': this.children[0].src.slice(0, -4)
+          'data': this.innerHTML
         }
         socket.emit('communication', message);
     }
@@ -414,6 +424,26 @@
         parent.insertBefore(tile, nextSibling);
       });
     }
+
+    /*
+      PLAY BEST button functionality
+    */
+    const viewbestButton = document.getElementById('viewbest-button');
+
+    viewbestButton.addEventListener('click', playBestOption);
+
+    function playBestOption() {
+      
+      message = {
+          'type': 'play',
+          'data': 'best'
+        }
+        socket.emit('communication', message);
+    
+    }
+
+
+
 
     /*
       SUBMIT button functionality
