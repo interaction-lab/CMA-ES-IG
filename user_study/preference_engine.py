@@ -1,6 +1,9 @@
 import time
 import csv
 import os
+import numpy as np
+from arm_controller import ArmController
+from blossom_controller import BlossomController
 
 class PreferenceLearner:
     '''
@@ -10,19 +13,26 @@ class PreferenceLearner:
     def __init__(self, pid, task, method):
         self.preference = None
         self.times = 0
-
         self.pid = pid
         self.task = task
         self.method = method
 
+        if self.task == 'blossom':
+            self.controller = BlossomController()
+            self.embeddings = np.load('./static/blossom_embeddings.npy')
+            
+        if self.task == 'handover':
+            self.controller = ArmController()
+            self.embeddings = np.load('./static/handover_embeddings.npy')
+
 
 
     def handle_message(self, message):
+        
         if message['type'] == 'play':
             self.log_play_message(message['data'])
-
-            if self.task == 'gesture':
-                self.play_gestures(message['data'])
+            print(message['data'].split('/')[-1])
+            self.controller.play(message['data'].split('/')[-1])
 
 
             print(f"User {self.pid} is playing {message['data']}")
@@ -102,7 +112,7 @@ class PreferenceLearner:
 
 def worker(input_queue, output_queue):
     #task can be 'handover' or 'gesture'
-    pl = PreferenceLearner(0, 'handover', 'infogain')
+    pl = PreferenceLearner(0, 'blossom', 'infogain')
 
     while True:
         message = input_queue.get()
