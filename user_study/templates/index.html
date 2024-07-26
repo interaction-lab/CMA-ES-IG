@@ -6,18 +6,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>User Preference Study</title>
   <style>
-
     #loading-overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black */
-      display: none; /* initially hidden */
+      background-color: rgba(0, 0, 0, 0.5);
+      display: none;
       justify-content: center;
       align-items: center;
-      z-index: 1000; /* ensure it is above other elements */
+      z-index: 1000;
     }
 
     #loading-overlay::after {
@@ -26,7 +25,6 @@
       font-size: 2em;
     }
 
-    
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -158,19 +156,28 @@
       margin-bottom: 20px;
     }
 
+    #best-container {
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      width: auto;
+      max-width: 1200px;
+      height: 180px;
+      border: 2px solid #333;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
     .tile {
       width: 13vh;
       height: 13vh;
-
       background-color: #ccc;
       border: 2px solid #666;
       margin: 0px;
       cursor: pointer;
       display: flex;
       justify-content: center;
-      /* Center horizontally */
       align-items: center;
-      /* Center vertically */
     }
 
     .tile img {
@@ -221,6 +228,16 @@
     #viewbest-button:hover {
       background-color: #0b4d47;
     }
+
+    .copied-tile {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      opacity: 0.7;
+    }
   </style>
 </head>
 
@@ -230,44 +247,36 @@
 
     <div id="video-container">
       <div id="video-text">
-        <!-- <h3>You are designing for the <i>IDLE</i> signal.</h3>
-        The idle signal is played every 10 seconds while the robot
-        waits for a command. -->
       </div>
-
-      <!-- <div id="video-panel">
-      <video controls>
-        <source src="/static/data/StudyVideos.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
-      </div> -->
-
     </div>
+
+    <!-- Added new option box labeled "Best Option Seen" -->
+    <div id="best-container">
+    <div class="option-box" id="best-seen" droppable="true">
+      <div class="option-label">Favorite</div>
+    </div>
+  </div>
 
     <div id="option-display">
       <div class="option-box" id="worst" droppable="true">
         <div class="option-label">Worst</div>
       </div>
       <div class="option-box" id="middle1" droppable="true"></div>
-      <!-- <div class="option-box" id="middle2" droppable="true"></div>
-      <div class="option-box" id="middle3" droppable="true"></div> -->
       <div class="option-box" id="best" droppable="true">
         <div class="option-label">Best</div>
       </div>
     </div>
-    
+
     <div id="tiles-container">
       <div class="tile" id="tile1" draggable="true"></div>
       <div class="tile" id="tile2" draggable="true"></div>
       <div class="tile" id="tile3" draggable="true"></div>
-      <!-- <div class="tile" id="tile4" draggable="true"></div>
-      <div class="tile" id="tile5" draggable="true"></div> -->
     </div>
 
     <div id="button-container">
       <button id="submit-button">Submit</button>
       <button id="reset-button">Reset</button>
-      <button id="viewbest-button">View Best So Far</button>
+      <button id="viewbest-button">View Predicted Best</button>
     </div>
 
   </div>
@@ -275,79 +284,68 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"></script>
 
   <script>
-    // Add your JavaScript here
-
-    /*
-        Socket Functionality
-    */
     var socket = io.connect('http://localhost:8001');
-      socket.on('connect', function() {
-          console.log('Connected to server');
-          sendMessage('');
-          
-      });
-      socket.on('query', function(data) {
-          //receive the set of items to rank from the preference learning engine
-          console.log('Received message:', data);
-          closeLoadingOverlay();
-          updateOptions(data);
-      });
+    socket.on('connect', function () {
+      console.log('Connected to server');
+      sendMessage('');
+    });
+    socket.on('query', function (data) {
+      console.log('Received message:', data);
+      closeLoadingOverlay();
+      updateOptions(data);
+    });
 
-
-
-
-    /*
-        Communication Functionality
-    */
-
-    //Update the tiles with the options
     function updateOptions(options) {
-      const tiles = document.querySelectorAll('.tile');
-      
-      tiles.forEach((tile, index) => {
-          const key = `index${index}`;
+        const tiles = document.querySelectorAll('.tile');
+        let tileIndex = 0;
+        tiles.forEach((tile) => {
+          // Skip updating the tile in the "Favorite" box
+          if (tile.closest('#best-seen')) {
+            return;
+          }
+          const key = `index${tileIndex}`;
           if (options[key]) {
             const image = options[key];
             tile.innerHTML = `${image}`;
-            tile.dataset.index = index;
+            tile.dataset.index = tileIndex;
           } else {
             tile.innerHTML = '';
             delete tile.dataset.index;
           }
+          tileIndex++;
         });
       }
 
-    function getRanking() {
-      const rankedTiles = document.querySelectorAll('.option-box .tile');
-      const ranking = Array.from(rankedTiles).map(tile => tile.innerHTML);
-      return ranking;
-    }
+
+      function getRanking() {
+        // Collect all option boxes excluding the favorite box
+        const optionBoxes = document.querySelectorAll('.option-box:not(#best-seen)');
+        const ranking = Array.from(optionBoxes).map(box => {
+          const tile = box.querySelector('.tile');
+          return tile ? tile.innerHTML : ''; // Return tile content if it exists
+        });
+        return ranking;
+      }
 
     function sendMessage(ranking) {
-        message = {
-          'type': 'ranking',
-          'data': ranking
-        }
-        socket.emit('communication', message);
+      message = {
+        'type': 'ranking',
+        'data': ranking
+      }
+      socket.emit('communication', message);
     }
-      
+
     function clickButton() {
       message = {
-          'type': 'play',
-          'data': this.innerHTML
-        }
-        socket.emit('communication', message);
+        'type': 'play',
+        'data': this.innerHTML
+      }
+      socket.emit('communication', message);
     }
 
-
-    /*
-      Dragging functionality
-    */
     const optionBoxes = document.querySelectorAll('.option-box');
     const tiles = document.querySelectorAll('.tile');
 
-
-    // Store original position of tiles
     const originalTiles = Array.from(tiles).map(tile => ({
       tile,
       parent: tile.parentNode,
@@ -368,15 +366,12 @@
       this.classList.remove('dragging');
     }
 
-    
-
     optionBoxes.forEach(box => {
       box.addEventListener('dragover', dragOver);
       box.addEventListener('dragenter', dragEnter);
       box.addEventListener('dragleave', dragLeave);
       box.addEventListener('drop', dragDropOptionDisplay);
     });
-
 
     function dragOver(e) {
       e.preventDefault();
@@ -391,90 +386,97 @@
       this.classList.remove('hovered');
     }
 
+    const resetButton = document.getElementById('reset-button');
+    resetButton.addEventListener('click', resetTiles);
+
+
+
+
+
+
+
     function dragDropOptionDisplay() {
       const draggedTile = document.querySelector('.tile.dragging');
       const targetBox = this;
       const sourceBox = draggedTile.parentNode;
 
-      // If the target box is empty, simply append the dragged tile
-      if (!targetBox.querySelector('.tile')) {
+      if (targetBox.id === 'best-seen') {
+        const copiedTile = draggedTile.cloneNode(true);
+        copiedTile.classList.remove('dragging', 'copied-tile'); // Remove dragging and copied-tile classes from the copied tile
+        copiedTile.style.opacity = '1'; // Ensure the copied tile is fully opaque
+        copiedTile.addEventListener('click', clickButton); // Add the click event listener to the copied tile
+        targetBox.innerHTML = '<div class="option-label">Favorite</div>';
+        targetBox.appendChild(copiedTile);
+
+
+        message = {
+          'type': 'set_favorite',
+          'data': copiedTile.innerHTML
+        }
+        socket.emit('communication', message);
+
+      } else if (!targetBox.querySelector('.tile')) {
         targetBox.appendChild(draggedTile);
       } else {
-        // Swap the tiles by replacing them in their respective containers
         const targetTile = targetBox.querySelector('.tile');
         targetBox.removeChild(targetTile);
         sourceBox.appendChild(targetTile);
         targetBox.appendChild(draggedTile);
       }
 
-      // Remove the 'hovered' class from the target box
       targetBox.classList.remove('hovered');
     }
 
-    /*
-      RESET button functionality
-    */
-    const resetButton = document.getElementById('reset-button');
+function resetTiles() {
+  originalTiles.forEach(data => {
+    const { tile, parent, nextSibling } = data;
+    parent.insertBefore(tile, nextSibling);
+  });
+  const bestSeenBox = document.getElementById('best-seen');
+  const copiedTile = bestSeenBox.querySelector('.tile');
+  if (copiedTile) {
+    copiedTile.style.opacity = '1'; // Ensure the copied tile is fully opaque
+    copiedTile.classList.remove('dragging', 'copied-tile'); // Remove dragging and copied-tile classes from the copied tile
+    copiedTile.addEventListener('click', clickButton); // Add the click event listener to the copied tile
+  }
+}
 
-    resetButton.addEventListener('click', resetTiles);
 
-    function resetTiles() {
-      originalTiles.forEach(data => {
-        const { tile, parent, nextSibling } = data;
-        parent.insertBefore(tile, nextSibling);
-      });
-    }
 
-    /*
-      PLAY BEST button functionality
-    */
+
+
     const viewbestButton = document.getElementById('viewbest-button');
-
     viewbestButton.addEventListener('click', playBestOption);
 
     function playBestOption() {
-      
       message = {
-          'type': 'play',
-          'data': 'best'
-        }
-        socket.emit('communication', message);
-    
+        'type': 'play',
+        'data': 'best'
+      }
+      socket.emit('communication', message);
     }
 
-
-
-
-    /*
-      SUBMIT button functionality
-    */
     const submitButton = document.getElementById('submit-button');
     submitButton.addEventListener('click', submitRanking);
     function submitRanking() {
-      //todo make sure all options are ranked
       ranking = getRanking();
-      if (ranking.length < document.querySelectorAll('.option-box').length) {
+      if (ranking.length < document.querySelectorAll('.option-box').length - 1) {
         alert("Please rank all options");
         return;
       }
       showLoadingOverlay();
       resetTiles();
       sendMessage(ranking);
-
     }
 
-/*
-      LOADING functionality
-    */
-  
     function showLoadingOverlay() {
       const overlay = document.getElementById('loading-overlay');
-      overlay.style.display = 'flex'; // display the overlay as flex to center content
+      overlay.style.display = 'flex';
     }
 
     function closeLoadingOverlay() {
       const overlay = document.getElementById('loading-overlay');
-      overlay.style.display = 'none'; // hide the overlay
+      overlay.style.display = 'none';
     }
   </script>
 

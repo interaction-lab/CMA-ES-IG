@@ -77,7 +77,27 @@ class PreferenceLearner:
             if len(message['data']) == 3:
                 self.log_rank_message(message['data'])
             return self.learn_preference(message['data'])
+        
+        if message['type'] == 'set_favorite':
+            self.log_favorite_message(message['data'])
+            return
 
+
+    def log_favorite_message(self, data):
+        filename = f"./data/favorite{self.pid}.csv"
+        file_exists = os.path.isfile(filename)
+
+        with open(filename, mode='a', newline='') as csvfile:
+            csvwriter = csv.writer(csvfile)
+            if not file_exists:
+                csvwriter.writerow(['timestamp', 'pid', 'task', 'method', 'sequence', 'favorite_id'])  # Write header if file does not exist
+            csvwriter.writerow([time.time(), 
+                                self.pid,
+                                self.task,
+                                self.method,
+                                self.times,
+                                str(data)])
+                  
     def log_play_message(self, data):
         filename = f"./data/play{self.pid}.csv"
         file_exists = os.path.isfile(filename)
@@ -173,9 +193,13 @@ class PreferenceLearner:
 
 def worker(input_queue, output_queue):
     #task can be 'handover' or 'gesture'
-    # pl = PreferenceLearner(0, 'blossom', 'infogain')
-    pl = PreferenceLearner(0, 'blossom', 'CMA-ES')
-    # pl = PreferenceLearner(0, 'blossom', 'CMA-ES-IG')
+
+    # ONE OF
+    # infogain
+    # CMA-ES
+    # CMA-ES-IG
+
+    pl = PreferenceLearner(0, 'blossom', 'CMA-ES-IG')
 
     while True:
         message = input_queue.get()
