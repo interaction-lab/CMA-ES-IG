@@ -2,13 +2,16 @@ import time
 import csv
 import os
 import numpy as np
-# from arm_controller import ArmController
-from blossom_controller import BlossomController
+from arm_controller import ArmControllerProxy
+# from blossom_controller import BlossomController
+
 
 from irlpreference.input_models import LuceShepardChoice, WeakPreferenceChoice
 from irlpreference.query_generation import InfoGainQueryGenerator, RandomQueryGenerator, VolumeRemovalQueryGenerator
 from irlpreference.reward_parameterizations import MonteCarloLinearReward
 from cmaes_generators import CMAESGenerator, CMAESIGGenerator
+
+
 
 
 class PreferenceLearner:
@@ -28,7 +31,7 @@ class PreferenceLearner:
             self.embeddings = np.load('./static/blossom_embeddings.npy')
             
         if self.task == 'handover':
-            self.controller = ArmController()
+            self.controller = ArmControllerProxy()
             self.embeddings = np.load('./static/handover_embeddings.npy')
 
 
@@ -50,7 +53,7 @@ class PreferenceLearner:
 
         best = np.argmin(self.embeddings @ expected_preference)
 
-        return best
+        return str(best)
     
     def handle_message(self, message):
         # all messages from the web app end up here
@@ -173,13 +176,18 @@ class PreferenceLearner:
 
 def worker(input_queue, output_queue):
     #task can be 'handover' or 'gesture'
-    # pl = PreferenceLearner(0, 'blossom', 'infogain')
-    pl = PreferenceLearner(0, 'blossom', 'CMA-ES')
-    # pl = PreferenceLearner(0, 'blossom', 'CMA-ES-IG')
+
+    # one of 
+    # infogain
+    # CMA-ES
+    # CMA-ES-IG
+    pl = PreferenceLearner(2, 'handover', 'CMA-ES-IG')
+    
 
     while True:
         message = input_queue.get()
         if message == 'STOP':
+            pl.controller.stop()
             break
         response = pl.handle_message(message)
         if response is not None:

@@ -3,6 +3,9 @@ from flask_socketio import SocketIO, emit
 import sys
 import logging
 from multiprocessing import Process, Queue
+import socket
+
+
 
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")  # allow communication on the same IP (main use case for this package)

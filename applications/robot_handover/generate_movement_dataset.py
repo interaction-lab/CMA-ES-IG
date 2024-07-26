@@ -29,9 +29,9 @@ def generate_handover():
 
 
 
-handovers = np.zeros((1000, 50, 6))
+handovers = np.zeros((1500, 50, 6))
 
-for i in range(1000):
+for i in range(1500):
     handovers[i] = generate_handover()
 
 np.save('handovers.npy', handovers)
