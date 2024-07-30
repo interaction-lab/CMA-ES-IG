@@ -201,7 +201,7 @@ def worker(input_queue, output_queue):
     # infogain
     # CMA-ES
     # CMA-ES-IG
-    pl = PreferenceLearner(2, 'handover', 'CMA-ES-IG')
+    pl = PreferenceLearner(16, 'handover', 'CMA-ES-IG')
     
 
     while True:

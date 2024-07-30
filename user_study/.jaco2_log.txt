@@ -1,0 +1,308 @@
+29-07-2024 12:10:07 DEBUG: Initializing RS-485 Communication...
+29-07-2024 12:10:07 INFO: RS485 initialization completed
+29-07-2024 12:10:07 INFO: Activating Jaco2...
+29-07-2024 12:10:07 DEBUG: Joint feedback received for unknown joint
+29-07-2024 12:10:07 DEBUG: Joint feedback received for unknown joint
+29-07-2024 12:10:07 DEBUG: Joint feedback received for unknown joint
+29-07-2024 12:10:07 INFO: Connection successful
+29-07-2024 12:10:07 DEBUG: Initializing position control mode...
+29-07-2024 12:10:07 DEBUG: Switch control mode to Position control True for servo 0, Response: 1
+29-07-2024 12:10:07 DEBUG: Switch control mode to Position control True for servo 1, Response: 1
+29-07-2024 12:10:07 DEBUG: Switch control mode to Position control True for servo 2, Response: 1
+29-07-2024 12:10:07 DEBUG: Switch control mode to Position control True for servo 3, Response: 1
+29-07-2024 12:10:07 DEBUG: Switch control mode to Position control True for servo 4, Response: 1
+29-07-2024 12:10:07 DEBUG: Switch control mode to Position control True for servo 5, Response: 1
+29-07-2024 12:10:07 INFO: Position control mode activated
+29-07-2024 12:10:07 DEBUG: Joint feedback received for unknown joint
+29-07-2024 12:10:07 DEBUG: Joint feedback received for unknown joint
+29-07-2024 12:10:07 DEBUG: Joint feedback received for unknown joint
+29-07-2024 12:10:07 DEBUG: Joint feedback received for unknown joint
+29-07-2024 12:10:07 DEBUG: Joint feedback received for unknown joint
+29-07-2024 12:10:07 DEBUG: Joint feedback received for unknown joint
+29-07-2024 12:10:07 DEBUG: Actuator: 0 position is: 275.343750 with target: 275.019745 mod 360: 275.000000
+29-07-2024 12:10:07 DEBUG: Actuator: 1 position is: 167.531250 with target: 166.157761 mod 360: 167.000000
+29-07-2024 12:10:07 DEBUG: Actuator: 2 position is: 57.468655 with target: 57.295776 mod 360: 57.000000
+29-07-2024 12:10:07 DEBUG: Actuator: 3 position is: 240.582809 with target: 240.642242 mod 360: 240.000000
+29-07-2024 12:10:07 DEBUG: Actuator: 4 position is: 82.765335 with target: 80.214088 mod 360: 82.000000
+29-07-2024 12:10:07 DEBUG: Actuator: 5 position is: 75.277412 with target: 74.484505 mod 360: 75.000000
+29-07-2024 12:10:07 DEBUG: Initializing force mode
+29-07-2024 12:10:07 DEBUG: STEP 1/8: Getting current position...
+29-07-2024 12:10:07 DEBUG: STEP 2/8: Setting torque config feedforward advanced parameters...
+29-07-2024 12:10:07 DEBUG: Torque config safety test passed for servo 0
+29-07-2024 12:10:07 DEBUG: Torque config safety test passed for servo 1
+29-07-2024 12:10:07 DEBUG: Torque config safety test passed for servo 2
+29-07-2024 12:10:07 DEBUG: Torque config safety test passed for servo 3
+29-07-2024 12:10:07 DEBUG: Torque config safety test passed for servo 4
+29-07-2024 12:10:07 DEBUG: Torque config safety test passed for servo 5
+29-07-2024 12:10:07 DEBUG: STEP 3/8: Setting advanced torque parameters 1...
+29-07-2024 12:10:07 DEBUG: Torque config safety test passed for servo 0
+29-07-2024 12:10:07 DEBUG: Torque config safety test passed for servo 1
+29-07-2024 12:10:07 DEBUG: Torque config safety test passed for servo 2
+29-07-2024 12:10:07 DEBUG: Torque config safety test passed for servo 3
+29-07-2024 12:10:07 DEBUG: Torque config safety test passed for servo 4
+29-07-2024 12:10:07 DEBUG: Torque config safety test passed for servo 5
+29-07-2024 12:10:07 DEBUG: STEP 4/8: Setting advanced torque parameters 2...
+29-07-2024 12:10:07 DEBUG: Torque config safety test passed for servo 0
+29-07-2024 12:10:07 DEBUG: Torque config safety test passed for servo 1
+29-07-2024 12:10:07 DEBUG: Torque config safety test passed for servo 2
+29-07-2024 12:10:07 DEBUG: Torque config safety test passed for servo 3
+29-07-2024 12:10:07 DEBUG: Torque config safety test passed for servo 4
+29-07-2024 12:10:07 DEBUG: Torque config safety test passed for servo 5
+29-07-2024 12:10:07 DEBUG: STEP 5/8: Setting torque control limits...
+29-07-2024 12:10:07 DEBUG: Torque config safety test passed for servo 0
+29-07-2024 12:10:07 DEBUG: Torque config safety test passed for servo 1
+29-07-2024 12:10:07 DEBUG: Torque config safety test passed for servo 2
+29-07-2024 12:10:07 DEBUG: Torque config safety test passed for servo 3
+29-07-2024 12:10:07 DEBUG: Torque config safety test passed for servo 4
+29-07-2024 12:10:07 DEBUG: Torque config safety test passed for servo 5
+29-07-2024 12:10:07 DEBUG: STEP 6/8: Setting torque safety parameters...
+29-07-2024 12:10:07 DEBUG: Torque config safety test passed for servo 0
+29-07-2024 12:10:07 DEBUG: Torque config safety test passed for servo 1
+29-07-2024 12:10:07 DEBUG: Torque config safety test passed for servo 2
+29-07-2024 12:10:07 DEBUG: Torque config safety test passed for servo 3
+29-07-2024 12:10:07 DEBUG: Torque config safety test passed for servo 4
+29-07-2024 12:10:07 DEBUG: Torque config safety test passed for servo 5
+29-07-2024 12:10:07 DEBUG: STEP 7/8: Checking torque sensor calibration...
+29-07-2024 12:10:07 DEBUG: STEP 8/8: Sending request to switch to torque control mode...
+29-07-2024 12:10:07 DEBUG: Switch control mode to Force control True for servo 0, Response: 257
+29-07-2024 12:10:07 DEBUG: Switch control mode to Force control True for servo 1, Response: 257
+29-07-2024 12:10:07 DEBUG: Switch control mode to Force control True for servo 2, Response: 257
+29-07-2024 12:10:07 DEBUG: Switch control mode to Force control True for servo 3, Response: 257
+29-07-2024 12:10:07 DEBUG: Switch control mode to Force control True for servo 4, Response: 257
+29-07-2024 12:10:07 DEBUG: Switch control mode to Force control True for servo 5, Response: 257
+29-07-2024 12:10:07 INFO: Force control mode activated
+29-07-2024 12:10:07 DEBUG: Initializing position control mode...
+29-07-2024 12:10:07 DEBUG: Switch control mode to Position control True for servo 0, Response: 1
+29-07-2024 12:10:07 DEBUG: Switch control mode to Position control True for servo 1, Response: 1
+29-07-2024 12:10:07 DEBUG: Switch control mode to Position control True for servo 2, Response: 1
+29-07-2024 12:10:07 DEBUG: Switch control mode to Position control True for servo 3, Response: 1
+29-07-2024 12:10:07 DEBUG: Switch control mode to Position control True for servo 4, Response: 1
+29-07-2024 12:10:07 DEBUG: Switch control mode to Position control True for servo 5, Response: 1
+29-07-2024 12:10:07 INFO: Position control mode activated
+29-07-2024 12:10:07 INFO: Connection closed
+------------------------------------------------------
+29-07-2024 04:16:18 DEBUG: Initializing RS-485 Communication...
+29-07-2024 04:16:18 INFO: RS485 initialization completed
+29-07-2024 04:16:18 INFO: Activating Jaco2...
+29-07-2024 04:16:18 INFO: Connection successful
+29-07-2024 04:16:18 DEBUG: Initializing position control mode...
+29-07-2024 04:16:18 DEBUG: Switch control mode to Position control True for servo 0, Response: 1
+29-07-2024 04:16:18 DEBUG: Switch control mode to Position control True for servo 1, Response: 1
+29-07-2024 04:16:18 DEBUG: Switch control mode to Position control True for servo 2, Response: 1
+29-07-2024 04:16:18 DEBUG: Switch control mode to Position control True for servo 3, Response: 1
+29-07-2024 04:16:18 DEBUG: Switch control mode to Position control True for servo 4, Response: 1
+29-07-2024 04:16:18 DEBUG: Switch control mode to Position control True for servo 5, Response: 1
+29-07-2024 04:16:18 INFO: Position control mode activated
+29-07-2024 04:16:18 DEBUG: Actuator: 0 position is: 276.937500 with target: 275.019745 mod 360: 276.000000
+29-07-2024 04:16:18 DEBUG: Actuator: 1 position is: 167.953125 with target: 166.157761 mod 360: 167.000000
+29-07-2024 04:16:18 DEBUG: Actuator: 2 position is: 56.156250 with target: 57.295776 mod 360: 56.000000
+29-07-2024 04:16:18 DEBUG: Actuator: 3 position is: 239.659103 with target: 240.642242 mod 360: 239.000000
+29-07-2024 04:16:18 DEBUG: Actuator: 4 position is: 80.045456 with target: 80.214088 mod 360: 80.000000
+29-07-2024 04:16:18 DEBUG: Actuator: 5 position is: -2086.977295 with target: 74.484505 mod 360: 74.000000
+29-07-2024 04:16:18 DEBUG: Initializing force mode
+29-07-2024 04:16:18 DEBUG: STEP 1/8: Getting current position...
+29-07-2024 04:16:18 DEBUG: STEP 2/8: Setting torque config feedforward advanced parameters...
+29-07-2024 04:16:18 DEBUG: Torque config safety test passed for servo 0
+29-07-2024 04:16:18 DEBUG: Torque config safety test passed for servo 1
+29-07-2024 04:16:18 DEBUG: Torque config safety test passed for servo 2
+29-07-2024 04:16:18 DEBUG: Torque config safety test passed for servo 3
+29-07-2024 04:16:18 DEBUG: Torque config safety test passed for servo 4
+29-07-2024 04:16:18 DEBUG: Torque config safety test passed for servo 5
+29-07-2024 04:16:18 DEBUG: STEP 3/8: Setting advanced torque parameters 1...
+29-07-2024 04:16:18 DEBUG: Torque config safety test passed for servo 0
+29-07-2024 04:16:18 DEBUG: Torque config safety test passed for servo 1
+29-07-2024 04:16:18 DEBUG: Torque config safety test passed for servo 2
+29-07-2024 04:16:18 DEBUG: Torque config safety test passed for servo 3
+29-07-2024 04:16:18 DEBUG: Torque config safety test passed for servo 4
+29-07-2024 04:16:18 DEBUG: Torque config safety test passed for servo 5
+29-07-2024 04:16:18 DEBUG: STEP 4/8: Setting advanced torque parameters 2...
+29-07-2024 04:16:18 DEBUG: Torque config safety test passed for servo 0
+29-07-2024 04:16:18 DEBUG: Torque config safety test passed for servo 1
+29-07-2024 04:16:18 DEBUG: Torque config safety test passed for servo 2
+29-07-2024 04:16:18 DEBUG: Torque config safety test passed for servo 3
+29-07-2024 04:16:18 DEBUG: Torque config safety test passed for servo 4
+29-07-2024 04:16:18 DEBUG: Torque config safety test passed for servo 5
+29-07-2024 04:16:18 DEBUG: STEP 5/8: Setting torque control limits...
+29-07-2024 04:16:18 DEBUG: Torque config safety test passed for servo 0
+29-07-2024 04:16:18 DEBUG: Torque config safety test passed for servo 1
+29-07-2024 04:16:18 DEBUG: Torque config safety test passed for servo 2
+29-07-2024 04:16:18 DEBUG: Torque config safety test passed for servo 3
+29-07-2024 04:16:18 DEBUG: Torque config safety test passed for servo 4
+29-07-2024 04:16:18 DEBUG: Data for joint 5 not updated, checking again...
+29-07-2024 04:16:18 DEBUG: STEP 6/8: Setting torque safety parameters...
+29-07-2024 04:16:18 DEBUG: Torque config safety test passed for servo 5
+29-07-2024 04:16:18 DEBUG: Torque config safety test passed for servo 0
+29-07-2024 04:16:18 DEBUG: Torque config safety test passed for servo 1
+29-07-2024 04:16:18 DEBUG: Torque config safety test passed for servo 2
+29-07-2024 04:16:18 DEBUG: Torque config safety test passed for servo 3
+29-07-2024 04:16:18 DEBUG: Torque config safety test passed for servo 4
+29-07-2024 04:16:18 DEBUG: Torque config safety test passed for servo 5
+29-07-2024 04:16:18 DEBUG: STEP 7/8: Checking torque sensor calibration...
+29-07-2024 04:16:18 DEBUG: STEP 8/8: Sending request to switch to torque control mode...
+29-07-2024 04:16:18 DEBUG: Switch control mode to Force control True for servo 0, Response: 257
+29-07-2024 04:16:18 DEBUG: Switch control mode to Force control True for servo 1, Response: 257
+29-07-2024 04:16:18 DEBUG: Switch control mode to Force control True for servo 2, Response: 257
+29-07-2024 04:16:18 DEBUG: Switch control mode to Force control True for servo 3, Response: 257
+29-07-2024 04:16:18 DEBUG: Switch control mode to Force control True for servo 4, Response: 257
+29-07-2024 04:16:18 DEBUG: Switch control mode to Force control True for servo 5, Response: 257
+29-07-2024 04:16:18 INFO: Force control mode activated
+29-07-2024 04:16:18 DEBUG: Initializing position control mode...
+29-07-2024 04:16:18 DEBUG: Switch control mode to Position control True for servo 0, Response: 1
+29-07-2024 04:16:18 DEBUG: Switch control mode to Position control True for servo 1, Response: 1
+29-07-2024 04:16:18 DEBUG: Switch control mode to Position control True for servo 2, Response: 1
+29-07-2024 04:16:18 DEBUG: Switch control mode to Position control True for servo 3, Response: 1
+29-07-2024 04:16:18 DEBUG: Switch control mode to Position control True for servo 4, Response: 1
+29-07-2024 04:16:18 DEBUG: Switch control mode to Position control True for servo 5, Response: 1
+29-07-2024 04:16:18 INFO: Position control mode activated
+29-07-2024 04:16:18 DEBUG: Data for joint 5 not updated, checking again...
+29-07-2024 04:16:18 DEBUG: Data for joint 5 not updated, checking again...
+29-07-2024 04:16:18 DEBUG: Data for joint 5 not updated, checking again...
+29-07-2024 04:16:18 DEBUG: Data for joint 5 not updated, checking again...
+29-07-2024 04:16:18 DEBUG: Data for joint 5 not updated, checking again...
+29-07-2024 04:16:18 DEBUG: Data for joint 5 not updated, checking again...
+29-07-2024 04:16:18 DEBUG: Data for joint 5 not updated, checking again...
+29-07-2024 04:16:18 DEBUG: Data for joint 4 not updated, checking again...
+29-07-2024 04:16:18 DEBUG: Data for joint 5 not updated, checking again...
+29-07-2024 04:16:18 DEBUG: Data for joint 5 not updated, checking again...
+29-07-2024 04:16:18 INFO: Connection closed
+------------------------------------------------------
+30-07-2024 10:51:12 DEBUG: Initializing RS-485 Communication...
+30-07-2024 10:51:12 INFO: RS485 initialization completed
+30-07-2024 10:51:12 INFO: Activating Jaco2...
+30-07-2024 10:51:12 INFO: Connection successful
+30-07-2024 10:51:12 DEBUG: Initializing position control mode...
+30-07-2024 10:51:12 DEBUG: Switch control mode to Position control True for servo 0, Response: 1
+30-07-2024 10:51:12 DEBUG: Switch control mode to Position control True for servo 1, Response: 1
+30-07-2024 10:51:12 DEBUG: Switch control mode to Position control True for servo 2, Response: 1
+30-07-2024 10:51:12 DEBUG: Switch control mode to Position control True for servo 3, Response: 1
+30-07-2024 10:51:12 DEBUG: Switch control mode to Position control True for servo 4, Response: 1
+30-07-2024 10:51:12 DEBUG: Switch control mode to Position control True for servo 5, Response: 1
+30-07-2024 10:51:12 INFO: Position control mode activated
+30-07-2024 10:51:12 DEBUG: Actuator: 0 position is: 276.750000 with target: 275.019745 mod 360: 276.000000
+30-07-2024 10:51:12 DEBUG: Actuator: 1 position is: 167.765625 with target: 166.157761 mod 360: 167.000000
+30-07-2024 10:51:12 DEBUG: Actuator: 2 position is: 57.000000 with target: 57.295776 mod 360: 57.000000
+30-07-2024 10:51:12 DEBUG: Actuator: 3 position is: 239.863647 with target: 240.642242 mod 360: 239.000000
+30-07-2024 10:51:12 DEBUG: Actuator: 4 position is: 80.250000 with target: 80.214088 mod 360: 80.000000
+30-07-2024 10:51:12 DEBUG: Actuator: 5 position is: -2807.113770 with target: 74.484505 mod 360: 73.000000
+30-07-2024 10:51:12 DEBUG: Initializing force mode
+30-07-2024 10:51:12 DEBUG: STEP 1/8: Getting current position...
+30-07-2024 10:51:12 DEBUG: Data for joint 5 not updated, checking again...
+30-07-2024 10:51:12 DEBUG: STEP 2/8: Setting torque config feedforward advanced parameters...
+30-07-2024 10:51:12 DEBUG: Torque config safety test passed for servo 0
+30-07-2024 10:51:12 DEBUG: Torque config safety test passed for servo 1
+30-07-2024 10:51:12 DEBUG: Torque config safety test passed for servo 2
+30-07-2024 10:51:12 DEBUG: Torque config safety test passed for servo 3
+30-07-2024 10:51:12 DEBUG: Torque config safety test passed for servo 4
+30-07-2024 10:51:12 DEBUG: Torque config safety test passed for servo 5
+30-07-2024 10:51:12 DEBUG: STEP 3/8: Setting advanced torque parameters 1...
+30-07-2024 10:51:12 DEBUG: Torque config safety test passed for servo 0
+30-07-2024 10:51:12 DEBUG: Torque config safety test passed for servo 1
+30-07-2024 10:51:12 DEBUG: Torque config safety test passed for servo 2
+30-07-2024 10:51:12 DEBUG: Torque config safety test passed for servo 3
+30-07-2024 10:51:12 DEBUG: Torque config safety test passed for servo 4
+30-07-2024 10:51:12 DEBUG: Torque config safety test passed for servo 5
+30-07-2024 10:51:12 DEBUG: STEP 4/8: Setting advanced torque parameters 2...
+30-07-2024 10:51:12 DEBUG: Torque config safety test passed for servo 0
+30-07-2024 10:51:12 DEBUG: Torque config safety test passed for servo 1
+30-07-2024 10:51:12 DEBUG: Torque config safety test passed for servo 2
+30-07-2024 10:51:12 DEBUG: Torque config safety test passed for servo 3
+30-07-2024 10:51:12 DEBUG: Torque config safety test passed for servo 4
+30-07-2024 10:51:12 DEBUG: Torque config safety test passed for servo 5
+30-07-2024 10:51:12 DEBUG: STEP 5/8: Setting torque control limits...
+30-07-2024 10:51:12 DEBUG: Torque config safety test passed for servo 0
+30-07-2024 10:51:12 DEBUG: Torque config safety test passed for servo 1
+30-07-2024 10:51:12 DEBUG: Torque config safety test passed for servo 2
+30-07-2024 10:51:12 DEBUG: Torque config safety test passed for servo 3
+30-07-2024 10:51:12 DEBUG: Torque config safety test passed for servo 4
+30-07-2024 10:51:12 DEBUG: Torque config safety test passed for servo 5
+30-07-2024 10:51:12 DEBUG: STEP 6/8: Setting torque safety parameters...
+30-07-2024 10:51:12 DEBUG: Torque config safety test passed for servo 0
+30-07-2024 10:51:12 DEBUG: Torque config safety test passed for servo 1
+30-07-2024 10:51:12 DEBUG: Torque config safety test passed for servo 2
+30-07-2024 10:51:12 DEBUG: Torque config safety test passed for servo 3
+30-07-2024 10:51:12 DEBUG: Torque config safety test passed for servo 4
+30-07-2024 10:51:12 DEBUG: Torque config safety test passed for servo 5
+30-07-2024 10:51:12 DEBUG: STEP 7/8: Checking torque sensor calibration...
+30-07-2024 10:51:12 DEBUG: Data for joint 5 not updated, checking again...
+30-07-2024 10:51:12 DEBUG: STEP 8/8: Sending request to switch to torque control mode...
+30-07-2024 10:51:12 DEBUG: Switch control mode to Force control True for servo 0, Response: 257
+30-07-2024 10:51:12 DEBUG: Switch control mode to Force control True for servo 1, Response: 257
+30-07-2024 10:51:12 DEBUG: Switch control mode to Force control True for servo 2, Response: 257
+30-07-2024 10:51:12 DEBUG: Switch control mode to Force control True for servo 3, Response: 257
+30-07-2024 10:51:12 DEBUG: Switch control mode to Force control True for servo 4, Response: 257
+30-07-2024 10:51:12 DEBUG: Switch control mode to Force control True for servo 5, Response: 257
+30-07-2024 10:51:12 INFO: Force control mode activated
+30-07-2024 10:51:12 DEBUG: Initializing position control mode...
+30-07-2024 10:51:12 DEBUG: Switch control mode to Position control True for servo 0, Response: 1
+30-07-2024 10:51:12 DEBUG: Switch control mode to Position control True for servo 1, Response: 1
+30-07-2024 10:51:12 DEBUG: Switch control mode to Position control True for servo 2, Response: 1
+30-07-2024 10:51:12 DEBUG: Switch control mode to Position control True for servo 3, Response: 1
+30-07-2024 10:51:12 DEBUG: Switch control mode to Position control True for servo 4, Response: 1
+30-07-2024 10:51:12 DEBUG: Switch control mode to Position control True for servo 5, Response: 1
+30-07-2024 10:51:12 INFO: Position control mode activated
+30-07-2024 10:51:12 INFO: Connection closed
+------------------------------------------------------
+30-07-2024 11:37:21 DEBUG: Initializing RS-485 Communication...
+30-07-2024 11:37:21 INFO: RS485 initialization completed
+30-07-2024 11:37:21 INFO: Activating Jaco2...
+30-07-2024 11:37:21 INFO: Connection successful
+30-07-2024 11:37:21 DEBUG: Initializing position control mode...
+30-07-2024 11:37:21 DEBUG: Switch control mode to Position control True for servo 0, Response: 1
+30-07-2024 11:37:21 DEBUG: Switch control mode to Position control True for servo 1, Response: 1
+30-07-2024 11:37:21 DEBUG: Switch control mode to Position control True for servo 2, Response: 1
+30-07-2024 11:37:21 DEBUG: Switch control mode to Position control True for servo 3, Response: 1
+30-07-2024 11:37:21 DEBUG: Switch control mode to Position control True for servo 4, Response: 1
+30-07-2024 11:37:21 DEBUG: Switch control mode to Position control True for servo 5, Response: 1
+30-07-2024 11:37:21 INFO: Position control mode activated
+30-07-2024 11:37:21 DEBUG: Actuator: 0 position is: 276.937500 with target: 275.019745 mod 360: 276.000000
+30-07-2024 11:37:21 DEBUG: Actuator: 1 position is: 167.906250 with target: 166.157761 mod 360: 167.000000
+30-07-2024 11:37:21 DEBUG: Actuator: 2 position is: 56.859375 with target: 57.295776 mod 360: 56.000000
+30-07-2024 11:37:21 DEBUG: Actuator: 3 position is: 239.659103 with target: 240.642242 mod 360: 239.000000
+30-07-2024 11:37:21 DEBUG: Actuator: 4 position is: 80.045456 with target: 80.214088 mod 360: 80.000000
+30-07-2024 11:37:21 DEBUG: Actuator: 5 position is: -2807.250000 with target: 74.484505 mod 360: 73.000000
+30-07-2024 11:37:21 DEBUG: Initializing force mode
+30-07-2024 11:37:21 DEBUG: STEP 1/8: Getting current position...
+30-07-2024 11:37:21 DEBUG: STEP 2/8: Setting torque config feedforward advanced parameters...
+30-07-2024 11:37:21 DEBUG: Torque config safety test passed for servo 0
+30-07-2024 11:37:21 DEBUG: Torque config safety test passed for servo 1
+30-07-2024 11:37:21 DEBUG: Torque config safety test passed for servo 2
+30-07-2024 11:37:21 DEBUG: Torque config safety test passed for servo 3
+30-07-2024 11:37:21 DEBUG: Torque config safety test passed for servo 4
+30-07-2024 11:37:21 DEBUG: Torque config safety test passed for servo 5
+30-07-2024 11:37:21 DEBUG: STEP 3/8: Setting advanced torque parameters 1...
+30-07-2024 11:37:21 DEBUG: Torque config safety test passed for servo 0
+30-07-2024 11:37:21 DEBUG: Torque config safety test passed for servo 1
+30-07-2024 11:37:21 DEBUG: Torque config safety test passed for servo 2
+30-07-2024 11:37:21 DEBUG: Torque config safety test passed for servo 3
+30-07-2024 11:37:21 DEBUG: Torque config safety test passed for servo 4
+30-07-2024 11:37:21 DEBUG: Torque config safety test passed for servo 5
+30-07-2024 11:37:21 DEBUG: STEP 4/8: Setting advanced torque parameters 2...
+30-07-2024 11:37:21 DEBUG: Torque config safety test passed for servo 0
+30-07-2024 11:37:21 DEBUG: Torque config safety test passed for servo 1
+30-07-2024 11:37:21 DEBUG: Torque config safety test passed for servo 2
+30-07-2024 11:37:21 DEBUG: Torque config safety test passed for servo 3
+30-07-2024 11:37:21 DEBUG: Torque config safety test passed for servo 4
+30-07-2024 11:37:21 DEBUG: Torque config safety test passed for servo 5
+30-07-2024 11:37:21 DEBUG: STEP 5/8: Setting torque control limits...
+30-07-2024 11:37:21 DEBUG: Torque config safety test passed for servo 0
+30-07-2024 11:37:21 DEBUG: Torque config safety test passed for servo 1
+30-07-2024 11:37:21 DEBUG: Torque config safety test passed for servo 2
+30-07-2024 11:37:21 DEBUG: Torque config safety test passed for servo 3
+30-07-2024 11:37:21 DEBUG: Torque config safety test passed for servo 4
+30-07-2024 11:37:21 DEBUG: Torque config safety test passed for servo 5
+30-07-2024 11:37:21 DEBUG: STEP 6/8: Setting torque safety parameters...
+30-07-2024 11:37:21 DEBUG: Torque config safety test passed for servo 0
+30-07-2024 11:37:21 DEBUG: Torque config safety test passed for servo 1
+30-07-2024 11:37:21 DEBUG: Torque config safety test passed for servo 2
+30-07-2024 11:37:21 DEBUG: Torque config safety test passed for servo 3
+30-07-2024 11:37:21 DEBUG: Torque config safety test passed for servo 4
+30-07-2024 11:37:21 DEBUG: Torque config safety test passed for servo 5
+30-07-2024 11:37:21 DEBUG: STEP 7/8: Checking torque sensor calibration...
+30-07-2024 11:37:21 DEBUG: STEP 8/8: Sending request to switch to torque control mode...
+30-07-2024 11:37:21 DEBUG: Switch control mode to Force control True for servo 0, Response: 257
+30-07-2024 11:37:21 DEBUG: Switch control mode to Force control True for servo 1, Response: 257
+30-07-2024 11:37:21 DEBUG: Switch control mode to Force control True for servo 2, Response: 257
+30-07-2024 11:37:21 DEBUG: Switch control mode to Force control True for servo 3, Response: 257
+30-07-2024 11:37:21 DEBUG: Switch control mode to Force control True for servo 4, Response: 257
+30-07-2024 11:37:21 DEBUG: Switch control mode to Force control True for servo 5, Response: 257
+30-07-2024 11:37:21 INFO: Force control mode activated

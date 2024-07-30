@@ -1,0 +1,4 @@
+timestamp,pid,task,method,sequence,favorite_id
+1722380181.6552613,16,handover,infogain,1,679
+1722380608.4709635,16,handover,CMA-ES,1,228
+1722381068.5563807,16,handover,CMA-ES-IG,1,646

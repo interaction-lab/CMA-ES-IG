@@ -150,7 +150,7 @@ class ArmController:
         self.key_listener = KBHit()
 
         self.setpoint = np.array([4.8, 2.9, 1.0, 4.2, 1.4, 1.3], dtype='float32')
-        self.p_lims = np.array([4.5, 7.5, 5.5, 2.5, 2.5, 3.5])
+        self.p_lims = np.array([4.5, 10.5, 5.5, 2.5, 2.5, 3.5])
 
         self.interface.send_target_angles(self.setpoint)
 
@@ -172,7 +172,7 @@ class ArmController:
         feedback = self.interface.get_feedback()
         u = self.ctrlr.generate(q=feedback['q'], dq=feedback['dq']) #feedback['dq'])
 
-        p = 10 * (self.setpoint - feedback['q'])
+        p = 12 * (self.setpoint - feedback['q'])
         p = np.clip(p, -self.p_lims, self.p_lims)
 
         d = 2 * (0 - feedback['dq'])
@@ -265,15 +265,18 @@ if __name__ == '__main__':
                 if ord(c) == ord('q'):  # quit
                     break
 
+                if ord(c) == ord('s'):  # state
+                    print(controller.interface.get_feedback()['q'])
+
             controller.control()
             
-
-            if time.time() - start < 12:
-                t = (time.time() - start) / 10
+            TRAJ_LEN = 5
+            if time.time() - start < TRAJ_LEN + 2:
+                t = (time.time() - start) / TRAJ_LEN
                 set_point = controller.get_trajectory_setpoint(traj_i, t)
                 controller.update_setpoint(set_point)
             else:
-                t = 1 - ((time.time() - start - 12) / 7)
+                t = 1 - ((time.time() - start - TRAJ_LEN - 2) / TRAJ_LEN)
                 set_point = controller.get_trajectory_setpoint(traj_i, t)
                 controller.update_setpoint(set_point)
 
@@ -285,7 +288,7 @@ if __name__ == '__main__':
                     if data:
                         print('Received message:', data.decode())
 
-                        if time.time() - start > 19:
+                        if time.time() - start > 2 * TRAJ_LEN + 2:
                             start = time.time()
                             traj_i = int(data.decode())
 

@@ -15,10 +15,10 @@ def generate_handover():
     handover = np.zeros((50, 6))
 
     pose1 = [4.8, 2.9, 1.0, 4.2, 1.4, 1.3]
-    pose2 = points1[np.random.choice(len(points1))] + .01* np.random.randn(6)
-    pose2[-1] += .1* np.random.randn()
-    pose3 = points2[np.random.choice(len(points2))] + .01* np.random.randn(6)
-    pose3[-1] += .1* np.random.randn()
+    pose2 = points1[np.random.choice(len(points1))] + .02* np.random.randn(6)
+    pose2[-1] = np.random.uniform(.5,2)
+    pose3 = points2[np.random.choice(len(points2))] + .02* np.random.randn(6)
+    pose2[-1] = np.random.uniform(.5,2)
 
     interp = create_pose_interpolator([pose1, pose2, pose3])
 
@@ -29,9 +29,9 @@ def generate_handover():
 
 
 
-handovers = np.zeros((1500, 50, 6))
+handovers = np.zeros((1000, 50, 6))
 
-for i in range(1500):
+for i in range(1000):
     handovers[i] = generate_handover()
 
 np.save('handovers.npy', handovers)
