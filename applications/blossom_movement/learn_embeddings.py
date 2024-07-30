@@ -110,85 +110,85 @@ def unit_ball_loss(embedding):
 
 
 
-# # Load the dataset
-# data = np.load('blossom_gestures.npy')
-# # Normalize the dataset
-# mean = data.mean(axis=(0, 1), keepdims=True)
-# std = data.std(axis=(0, 1), keepdims=True)
-# normalized_data = (data - mean) / std
+# Load the dataset
+data = np.load('blossom_gestures.npy')
+# Normalize the dataset
+mean = data.mean(axis=(0, 1), keepdims=True)
+std = data.std(axis=(0, 1), keepdims=True)
+normalized_data = (data - mean) / std
 
-# # Convert to PyTorch tensor
-# data_tensor = torch.tensor(normalized_data, dtype=torch.float32)
+# Convert to PyTorch tensor
+data_tensor = torch.tensor(normalized_data, dtype=torch.float32)
 
-# # Create a DataLoader
-# batch_size = 64
-# dataset = TensorDataset(data_tensor)
-# dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
-
-
-
-# # Check for GPU
-# device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
-# # Instantiate the model and move it to the GPU
-# model = Conv1dAutoencoder(latent_size=32).to(device)
-# print(model)
+# Create a DataLoader
+batch_size = 64
+dataset = TensorDataset(data_tensor)
+dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
 
 
+
+# Check for GPU
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+# Instantiate the model and move it to the GPU
+model = Conv1dAutoencoder(latent_size=32).to(device)
+print(model)
 
 
 
 
-# import torch.optim as optim
 
-# # Loss function
-# criterion = nn.MSELoss()
 
-# # Optimizer
-# optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-5)
+import torch.optim as optim
 
-# # Training loop
-# num_epochs = 100
-# for epoch in range(num_epochs):
-#     for data in dataloader:
-#         inputs = data[0].permute(0, 2, 1).to(device)  # Change shape and move to GPU
+# Loss function
+criterion = nn.MSELoss()
+
+# Optimizer
+optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-5)
+
+# Training loop
+num_epochs = 100
+for epoch in range(num_epochs):
+    for data in dataloader:
+        inputs = data[0].permute(0, 2, 1).to(device)  # Change shape and move to GPU
         
-#        # Forward pass
-#         latent_embedding = model.encoder(inputs).view(inputs.size(0), -1)
-#         outputs = model(inputs)
+       # Forward pass
+        latent_embedding = model.encoder(inputs).view(inputs.size(0), -1)
+        outputs = model(inputs)
 
-#         reconstruction_loss = criterion(outputs, inputs)
-#         ub_loss = unit_ball_loss(latent_embedding)
+        reconstruction_loss = criterion(outputs, inputs)
+        ub_loss = unit_ball_loss(latent_embedding)
 
-#         loss = reconstruction_loss + .1 * ub_loss
+        loss = reconstruction_loss + .1 * ub_loss
         
-#         # Backward pass and optimization
-#         optimizer.zero_grad()
-#         loss.backward()
-#         optimizer.step()
+        # Backward pass and optimization
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
     
-#     print(f'Epoch [{epoch+1}/{num_epochs}], Loss: {loss.item():.4f}')
+    print(f'Epoch [{epoch+1}/{num_epochs}], Loss: {loss.item():.4f}')
 
 
-# # Switch to evaluation mode
-# model.eval() 
+# Switch to evaluation mode
+model.eval() 
 
-# # Get a batch of data
-# inputs = next(iter(dataloader))[0].permute(0, 2, 1).to(device)
+# Get a batch of data
+inputs = next(iter(dataloader))[0].permute(0, 2, 1).to(device)
 
-# # Forward pass
-# with torch.no_grad():
-#     outputs = model(inputs)
+# Forward pass
+with torch.no_grad():
+    outputs = model(inputs)
 
-# # Move data back to CPU for printing
-# inputs = inputs.cpu()
-# outputs = outputs.cpu()
+# Move data back to CPU for printing
+inputs = inputs.cpu()
+outputs = outputs.cpu()
 
-# # Plot original vs reconstructed sequences
-# plot_sequences(inputs.permute(0, 2, 1), outputs.permute(0, 2, 1))
+# Plot original vs reconstructed sequences
+plot_sequences(inputs.permute(0, 2, 1), outputs.permute(0, 2, 1))
 
-# # Assume 'model' is your instance of Conv1dAutoencoder
-# torch.save(model.state_dict(), 'autoencoder_model.pth')
+# Assume 'model' is your instance of Conv1dAutoencoder
+torch.save(model.state_dict(), 'autoencoder_model.pth')
 
 
 

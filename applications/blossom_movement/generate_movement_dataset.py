@@ -104,7 +104,7 @@ def generate_random_behavior():
     times = []
 
     for _ in range(num_points):
-        value = np.random.choice([-100, -40, 0, 40, 100])
+        value = np.random.choice([-100, -40, 0, 0, 0, 40, 100])
         time = np.random.uniform(0.5, 4.5)
 
         times.append(time)
