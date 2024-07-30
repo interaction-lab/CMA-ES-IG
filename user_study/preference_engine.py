@@ -199,7 +199,7 @@ def worker(input_queue, output_queue):
     # CMA-ES
     # CMA-ES-IG
 
-    pl = PreferenceLearner(0, 'blossom', 'CMA-ES-IG')
+    pl = PreferenceLearner(36, 'blossom', 'infogain')
 
     while True:
         message = input_queue.get()
