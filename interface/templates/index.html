@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Preference Study</title>
+  <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static', filename='styles/interface.css') }}">
+</head>
+
+<body>
+  <div id="loading-overlay"></div>
+  <div id="main-container">
+
+    <div id="video-container">
+      <div id="video-text">
+      </div>
+    </div>
+
+    <!-- Added new option box labeled "Best Option Seen" -->
+    <div id="best-container">
+    <div class="option-box" id="best-seen" droppable="true">
+      <div class="option-label">Favorite</div>
+    </div>
+  </div>
+
+    <div id="option-display">
+      <div class="option-box" id="worst" droppable="true">
+        <div class="option-label">Worst</div>
+      </div>
+      <div class="option-box" id="middle1" droppable="true"></div>
+      <div class="option-box" id="best" droppable="true">
+        <div class="option-label">Best</div>
+      </div>
+    </div>
+
+    <div id="tiles-container">
+      <div class="tile" id="tile1" draggable="true"></div>
+      <div class="tile" id="tile2" draggable="true"></div>
+      <div class="tile" id="tile3" draggable="true"></div>
+    </div>
+
+    <div id="button-container">
+      <button id="submit-button">Submit</button>
+      <button id="reset-button">Reset</button>
+      <button id="viewbest-button">View Predicted Best</button>
+    </div>
+
+  </div>
+
+  <script src="{{ url_for('static', filename='js/socketio.min.js') }}"></script>
+
+  <script>
+    var socket = io.connect('http://localhost:8001');
+    socket.on('connect', function () {
+      console.log('Connected to server');
+      sendMessage('');
+    });
+    socket.on('query', function (data) {
+      console.log('Received message:', data);
+      closeLoadingOverlay();
+      updateOptions(data);
+    });
+
+    function updateOptions(options) {
+        const tiles = document.querySelectorAll('.tile');
+        let tileIndex = 0;
+        tiles.forEach((tile) => {
+          // Skip updating the tile in the "Favorite" box
+          if (tile.closest('#best-seen')) {
+            return;
+          }
+          const key = `index${tileIndex}`;
+          if (options[key]) {
+            const image = options[key];
+            tile.innerHTML = `${image}`;
+            tile.dataset.index = tileIndex;
+          } else {
+            tile.innerHTML = '';
+            delete tile.dataset.index;
+          }
+          tileIndex++;
+        });
+      }
+
+
+      function getRanking() {
+        // Collect all option boxes excluding the favorite box
+        const optionBoxes = document.querySelectorAll('.option-box:not(#best-seen)');
+        const ranking = Array.from(optionBoxes).map(box => {
+          const tile = box.querySelector('.tile');
+          return tile ? tile.innerHTML : ''; // Return tile content if it exists
+        });
+        return ranking;
+      }
+
+    function sendMessage(ranking) {
+      message = {
+        'type': 'ranking',
+        'data': ranking
+      }
+      socket.emit('communication', message);
+    }
+
+    function clickButton() {
+      message = {
+        'type': 'play',
+        'data': this.innerHTML
+      }
+      socket.emit('communication', message);
+    }
+
+    const optionBoxes = document.querySelectorAll('.option-box');
+    const tiles = document.querySelectorAll('.tile');
+
+    const originalTiles = Array.from(tiles).map(tile => ({
+      tile,
+      parent: tile.parentNode,
+      nextSibling: tile.nextSibling
+    }));
+
+    tiles.forEach(tile => {
+      tile.addEventListener('dragstart', dragStart);
+      tile.addEventListener('dragend', dragEnd);
+      tile.addEventListener('click', clickButton);
+    });
+
+    function dragStart() {
+      this.classList.add('dragging');
+    }
+
+    function dragEnd() {
+      this.classList.remove('dragging');
+    }
+
+    optionBoxes.forEach(box => {
+      box.addEventListener('dragover', dragOver);
+      box.addEventListener('dragenter', dragEnter);
+      box.addEventListener('dragleave', dragLeave);
+      box.addEventListener('drop', dragDropOptionDisplay);
+    });
+
+    function dragOver(e) {
+      e.preventDefault();
+    }
+
+    function dragEnter(e) {
+      e.preventDefault();
+      this.classList.add('hovered');
+    }
+
+    function dragLeave() {
+      this.classList.remove('hovered');
+    }
+
+    const resetButton = document.getElementById('reset-button');
+    resetButton.addEventListener('click', resetTiles);
+
+
+
+
+
+
+
+    function dragDropOptionDisplay() {
+      const draggedTile = document.querySelector('.tile.dragging');
+      const targetBox = this;
+      const sourceBox = draggedTile.parentNode;
+
+      if (targetBox.id === 'best-seen') {
+        const copiedTile = draggedTile.cloneNode(true);
+        copiedTile.classList.remove('dragging', 'copied-tile'); // Remove dragging and copied-tile classes from the copied tile
+        copiedTile.style.opacity = '1'; // Ensure the copied tile is fully opaque
+        copiedTile.addEventListener('click', clickButton); // Add the click event listener to the copied tile
+        targetBox.innerHTML = '<div class="option-label">Favorite</div>';
+        targetBox.appendChild(copiedTile);
+
+
+        message = {
+          'type': 'set_favorite',
+          'data': copiedTile.innerHTML
+        }
+        socket.emit('communication', message);
+
+      } else if (!targetBox.querySelector('.tile')) {
+        targetBox.appendChild(draggedTile);
+      } else {
+        const targetTile = targetBox.querySelector('.tile');
+        targetBox.removeChild(targetTile);
+        sourceBox.appendChild(targetTile);
+        targetBox.appendChild(draggedTile);
+      }
+
+      targetBox.classList.remove('hovered');
+    }
+
+function resetTiles() {
+  originalTiles.forEach(data => {
+    const { tile, parent, nextSibling } = data;
+    parent.insertBefore(tile, nextSibling);
+  });
+  const bestSeenBox = document.getElementById('best-seen');
+  const copiedTile = bestSeenBox.querySelector('.tile');
+  if (copiedTile) {
+    copiedTile.style.opacity = '1'; // Ensure the copied tile is fully opaque
+    copiedTile.classList.remove('dragging', 'copied-tile'); // Remove dragging and copied-tile classes from the copied tile
+    copiedTile.addEventListener('click', clickButton); // Add the click event listener to the copied tile
+  }
+}
+
+
+
+
+
+    const viewbestButton = document.getElementById('viewbest-button');
+    viewbestButton.addEventListener('click', playBestOption);
+
+    function playBestOption() {
+      message = {
+        'type': 'play',
+        'data': 'best'
+      }
+      socket.emit('communication', message);
+    }
+
+    const submitButton = document.getElementById('submit-button');
+    submitButton.addEventListener('click', submitRanking);
+    function submitRanking() {
+      ranking = getRanking();
+      if (ranking.length < document.querySelectorAll('.option-box').length - 1) {
+        alert("Please rank all options");
+        return;
+      }
+      showLoadingOverlay();
+      resetTiles();
+      sendMessage(ranking);
+    }
+
+    function showLoadingOverlay() {
+      const overlay = document.getElementById('loading-overlay');
+      overlay.style.display = 'flex';
+    }
+
+    function closeLoadingOverlay() {
+      const overlay = document.getElementById('loading-overlay');
+      overlay.style.display = 'none';
+    }
+  </script>
+
+</body>
+
+</html>
