@@ -32,7 +32,7 @@ def plot_metric_subplots(dimensions, metric_data1, metric_data2, metric_name1, m
         for j, (method, color) in enumerate(zip(methods, colors)):
             cumulative_values = metric_data1[method][dim]
             m = np.mean(np.array(cumulative_values), axis=0) 
-            print(f'computed ALIGNMENT AUC for {dim}, {method}: {np.trapezoid(m)/len(m)}')
+            print(f'computed ALIGNMENT AUC for {dim}, {method}: {np.trapz(m)/len(m)}')
             std = np.std(np.array(cumulative_values), axis=0) / np.sqrt(30)
             axes[0,i].fill_between(range(len(m)), m-std, m+std, alpha=0.3, color=color)
             axes[0,i].plot(m, color=color)
@@ -57,7 +57,7 @@ def plot_metric_subplots(dimensions, metric_data1, metric_data2, metric_name1, m
         for j, (method, color) in enumerate(zip(methods, colors)):
             cumulative_values = metric_data2[method][dim]
             m = np.mean(np.array(cumulative_values), axis=0) 
-            print(f'computed QUALITY AUC for {dim}, {method}: {np.trapezoid(m) / len(m)}')
+            print(f'computed QUALITY AUC for {dim}, {method}: {np.trapz(m) / len(m)}')
             std = np.std(np.array(cumulative_values), axis=0) / np.sqrt(30)
             axes[1,i].fill_between(range(len(m)), m-std, m+std, alpha=0.3, color=color)
             axes[1,i].plot(m, color=color)

@@ -1,0 +1,3 @@
+[submodule "preference-learning-from-selection"]
+	path = preference-learning-from-selection
+	url = https://github.com/ndennler/preference-learning-from-selection.git
