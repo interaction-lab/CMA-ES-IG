@@ -8,13 +8,21 @@ for researchers adapting robot behaviors that interact with non-expert users, as
 generated with CMA-ES-IG align with the user's preference after each iteration, and the queries 
 are easy to answer from the user's perspective.
 
-We provide the code for CMA-ES-IG in the file `cmaesig.py`. We also provide the web interface we used
+We provide the code for CMA-ES-IG in the file `cmaesig_query_generation.py`. We also provide the web interface we used
 in our experiments to be a resource for other researchers. You will have to supply the code to play a
 particular behavior ID on your physical robot though :). We have provided dummy interfaces for you!
 
 
 # Installation 
 
+1. Clone this repository
+2. Install submodules with `git submodule update --init`
+3. Install dependencies:
 ```
 pip install -e preference-learning-from-selection
+pip install -r requirements.txt
 ```
+
+# Simulated Results
+
+The algorithmic implementation is provided in 
