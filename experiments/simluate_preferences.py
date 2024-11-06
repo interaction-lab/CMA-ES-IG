@@ -5,40 +5,41 @@ import matplotlib.pyplot as plt
 from irlpreference.input_models import LuceShepardChoice, WeakPreferenceChoice
 from irlpreference.query_generation import InfoGainQueryGenerator, RandomQueryGenerator, VolumeRemovalQueryGenerator
 from irlpreference.reward_parameterizations import MonteCarloLinearReward
-from user_study.cmaes_generators import CMAESGenerator, CMAESIGGenerator
+
+from cmaes_generators import CMAESGenerator, CMAESIGGenerator
 
 fig, ax = plt.subplots(2)
 
 def alignment_metric(true_w, guessed_w):
     return np.dot(guessed_w, true_w) / (np.linalg.norm(guessed_w) * np.linalg.norm(true_w))
 
+#no label was dim 16, 5items
 #Experimental Constants
 dim_embedding = 32
+items_per_query = 4
+
 true_preference = np.random.uniform(low=-1, high=1, size=dim_embedding)
 number_of_trials = 30
 max_number_of_queries = 30
-items_per_query = 4
+
 
 #User Input and Estimation of reward functions
-user_choice_model = LuceShepardChoice(rationality = 5)
-# user_choice_model = WeakPreferenceChoice(delta=1.0)
-
-user_estimate = MonteCarloLinearReward(dim_embedding, number_samples=10_000)
+user_choice_model = LuceShepardChoice(rationality = 10)
+user_estimate = MonteCarloLinearReward(dim_embedding, number_samples=50_000)
 
 #Generators
 random_generator = RandomQueryGenerator( [(-1,1)] * dim_embedding)
-vr_generator = VolumeRemovalQueryGenerator( [(-1,1)] * dim_embedding)
 ig_generator = InfoGainQueryGenerator([(-1,1)] * dim_embedding)
 
 cma_es = CMAESGenerator(dim_embedding,[(-1,1)] * dim_embedding, items_per_query)
 cma_es_ig = CMAESIGGenerator(dim_embedding,[(-1,1)] * dim_embedding, items_per_query)
 
-generators = [cma_es_ig, cma_es, random_generator, ig_generator]
-names = ['CMA-ES-IG', 'CMA-ES','Random']#, 'IG']
-
+generators = [cma_es_ig, cma_es, random_generator]
+names = ['CMA-ES-IG', 'CMA-ES','Random', 'IG']
 
 for generator, name in zip(generators, names):
     cumulative_values = []
+    cumulative_regret = []
     cumulative_per_query_alignment = []
 
     for _ in tqdm(range(number_of_trials)):
@@ -46,9 +47,13 @@ for generator, name in zip(generators, names):
         user_estimate.reset()
         if name == 'CMA-ES' or name == 'CMA-ES-IG':
             generator.reset()
+
+        all_trajectories = np.random.randn(5000, dim_embedding)
         true_preference = np.random.uniform(low=-1, high=1, size=dim_embedding)
         alignment = [0]
+        regret = []
         per_query_alignment = []
+        
 
 
         for _ in range(max_number_of_queries):
@@ -63,18 +68,28 @@ for generator, name in zip(generators, names):
                 generator.tell(list(query), ranking)
 
             user_estimate.update(user_choice_model.get_probability_of_input)   
-            alignment.append(alignment_metric(user_estimate.get_expectation(), true_preference))
-            per_query_alignment.append(np.max([alignment_metric(q, true_preference) for q in query]))
+
+            estimated_omega = user_estimate.get_expectation()
+
+            alignment.append(alignment_metric(estimated_omega, true_preference))
+            best_est_trajectory = all_trajectories[np.argmax(all_trajectories@estimated_omega)]
+            regret.append(np.max(all_trajectories@true_preference) - best_est_trajectory@true_preference)
+            per_query_alignment.append(np.average([alignment_metric(q, true_preference) for q in query]))
 
 
 
         cumulative_values += [alignment]
+        cumulative_regret += [regret]
         cumulative_per_query_alignment += [per_query_alignment]
+    
 
+    np.save(f'./results/{name}_alignment_{items_per_query}items_dim{dim_embedding}.npy', cumulative_values)
+    np.save(f'./results/{name}_regret_{items_per_query}items_dim{dim_embedding}.npy', cumulative_regret)
+    np.save(f'./results/{name}_per_query_alignment_{items_per_query}items_dim{dim_embedding}.npy', cumulative_per_query_alignment)
 
-    m = np.mean(np.array(cumulative_values), axis=0) 
-    std = np.std(np.array(cumulative_values), axis=0) / np.sqrt(number_of_trials)
-    ax[0].fill_between(range(max_number_of_queries+1), m-std, m+std, alpha=0.3)
+    m = np.mean(np.array(cumulative_regret), axis=0) 
+    std = np.std(np.array(cumulative_regret), axis=0) / np.sqrt(number_of_trials)
+    ax[0].fill_between(range(max_number_of_queries), m-std, m+std, alpha=0.3)
     ax[0].plot(m, label=name)
 
     m = np.mean(np.array(cumulative_per_query_alignment), axis=0) 
