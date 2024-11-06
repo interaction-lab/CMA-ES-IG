@@ -35,6 +35,7 @@ cma_es = CMAESGenerator(dim_embedding,[(-1,1)] * dim_embedding, items_per_query)
 cma_es_ig = CMAESIGGenerator(dim_embedding,[(-1,1)] * dim_embedding, items_per_query)
 
 generators = [cma_es_ig, cma_es, random_generator, ig_generator]
+generators = [cma_es_ig, cma_es, random_generator, ig_generator]
 names = ['CMA-ES-IG', 'CMA-ES','Random', 'IG']
 
 for generator, name in zip(generators, names):
