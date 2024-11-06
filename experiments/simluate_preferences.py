@@ -15,7 +15,7 @@ def alignment_metric(true_w, guessed_w):
 
 #no label was dim 16, 5items
 #Experimental Constants
-dim_embedding = 32
+dim_embedding = 16
 items_per_query = 4
 
 true_preference = np.random.uniform(low=-1, high=1, size=dim_embedding)
@@ -34,7 +34,7 @@ ig_generator = InfoGainQueryGenerator([(-1,1)] * dim_embedding)
 cma_es = CMAESGenerator(dim_embedding,[(-1,1)] * dim_embedding, items_per_query)
 cma_es_ig = CMAESIGGenerator(dim_embedding,[(-1,1)] * dim_embedding, items_per_query)
 
-generators = [cma_es_ig, cma_es, random_generator]
+generators = [cma_es_ig, cma_es, random_generator, ig_generator]
 names = ['CMA-ES-IG', 'CMA-ES','Random', 'IG']
 
 for generator, name in zip(generators, names):
