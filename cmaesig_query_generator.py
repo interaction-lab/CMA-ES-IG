@@ -2,14 +2,15 @@ import numpy as np
 from cmaes import CMA
 from sklearn.cluster import KMeans
 from sklearn_extra.cluster import KMedoids
-
+from scipy.spatial.distance import cdist
 
 class CMAESIGGenerator:
-    def __init__(self, dim, limits, population_size=10, use_boundary_mediods=False):
-        self.optimizer = CMA(mean=np.zeros(dim), sigma=1.3, population_size=population_size)
+    def __init__(self, dim, limits, population_size=10, use_boundary_mediods=False, sigma=1.0):
+        self.optimizer = CMA(mean=np.zeros(dim), sigma=sigma, population_size=population_size)
         self.dimension = dim
         self.limits = limits
         self.population_size = population_size
+        self.sigma = sigma
         self.use_boundary_mediods = use_boundary_mediods
 
     def _info_gain(self, reward_parameterization, input_model, query):
@@ -40,15 +41,11 @@ class CMAESIGGenerator:
         '''
 
         candidates = []
-        for _ in range(100):
+        for _ in range(200):
             x = self.optimizer.ask()
-            x = np.clip(x, -1, 1)
+            x = np.clip(x, [lim[0] for lim in self.limits], [lim[1] for lim in self.limits])
             candidates.append(x)
 
-        
-        kmeans = KMeans(n_clusters=number_items, n_init="auto").fit(candidates)
-        
-        query = kmeans.cluster_centers_
 
         #uses boundary medoids selection from https://proceedings.mlr.press/v87/biyik18a/biyik18a.pdf
         if self.use_boundary_mediods:
@@ -84,4 +81,4 @@ class CMAESIGGenerator:
         '''
         Resets the optimizer to its initial state.
         '''
-        self.optimizer = CMA(mean=np.zeros(self.dimension), sigma=.5, population_size=self.population_size)
+        self.optimizer = CMA(mean=np.zeros(self.dimension), sigma=self.sigma, population_size=self.population_size)

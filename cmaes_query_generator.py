@@ -2,8 +2,9 @@ import numpy as np
 from cmaes import CMA
 
 class CMAESGenerator:
-    def __init__(self, dim, limits, population_size=10):
-        self.optimizer = CMA(mean=np.zeros(dim), sigma=1.3, population_size=population_size)
+    def __init__(self, dim, limits, population_size=10, sigma=1.0):
+        self.optimizer = CMA(mean=np.zeros(dim), sigma=sigma, population_size=population_size)
+        self.sigma = sigma
         self.dimension = dim
         self.population_size = population_size
         self.limits = limits
@@ -15,7 +16,7 @@ class CMAESGenerator:
         queries = []
         for _ in range(number_items):
             x = self.optimizer.ask()
-            x = np.clip(x, -1, 1)# todo: change this to self.limits
+            x = np.clip(x, [lim[0] for lim in self.limits], [lim[1] for lim in self.limits])
             queries.append(x)
 
         return np.array(queries)
@@ -42,4 +43,4 @@ class CMAESGenerator:
         '''
         Resets the optimizer to its initial state.
         '''
-        self.optimizer = CMA(mean=np.zeros(self.dimension), sigma=1.3, population_size=self.population_size)
+        self.optimizer = CMA(mean=np.zeros(self.dimension), sigma=self.sigma, population_size=self.population_size)
