@@ -29,7 +29,7 @@ def random_point_in_unit_ball(dim_embedding):
 
 #no label was dim 16, 5items
 #Experimental Constants
-dim_embedding = 32
+dim_embedding = 8
 items_per_query = 4
 
 true_preference = np.random.uniform(low=-1, high=1, size=dim_embedding)
