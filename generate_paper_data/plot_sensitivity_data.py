@@ -2,14 +2,11 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-df = pd.read_csv('cmaes_param_sensitivity.csv')
-# df.query('sigma > 0.2', inplace=True)
+df = pd.read_csv('generate_paper_data/cmaes_param_sensitivity.csv')
 
-
-# Set font to serif
+# Set visualization styles
 plt.rcParams['font.family'] = 'serif'
 plt.rcParams['font.serif'] = ['Times New Roman'] 
-# plt.rcParams['text.usetex'] = True
 plt.rcParams['axes.titlesize'] = 16  # Title font size
 plt.rcParams['axes.labelsize'] = 12   # Axis labels font size
 plt.rcParams['legend.fontsize'] = 16

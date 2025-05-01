@@ -6,7 +6,7 @@ data = []
 for technique in ['CMA-ES', 'CMA-ES-IG', 'IG']:
     for dim in [8, 16, 32]:
         for metric in ['alignment', 'per_query_alignment', 'regret']:
-            metric_data = np.load(f'../results/{technique}_{metric}_4items_dim{dim}.npy')
+            metric_data = np.load(f'results/{technique}_{metric}_4items_dim{dim}.npy')
 
             for trial in range(30):
                 data.append({

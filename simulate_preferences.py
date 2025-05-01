@@ -48,7 +48,7 @@ ig_generator = InfoGainQueryGenerator([(-1,1)] * dim_embedding)
 cma_es = CMAESGenerator(dim_embedding,[(-1,1)] * dim_embedding, items_per_query, sigma=0.5)
 cma_es_ig = CMAESIGGenerator(dim_embedding,[(-1,1)] * dim_embedding, items_per_query, sigma=0.5)
 
-generators = [cma_es_ig, cma_es]
+generators = [cma_es_ig, cma_es, random_generator, ig_generator]
 names = ['CMA-ES-IG', 'CMA-ES','Random', 'IG']
 
 for generator, name in zip(generators, names):
