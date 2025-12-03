@@ -25,7 +25,7 @@ max_number_of_queries = 30
 
 #User Input and Estimation of reward functions
 user_choice_model = LuceShepardChoice(rationality = 10)
-user_estimate = MonteCarloLinearReward(dim_embedding, number_samples=50_000)
+user_estimate = MonteCarloLinearReward(dim_embedding, number_samples=10_000)
 
 #Generators
 random_generator = RandomQueryGenerator( [(-1,1)] * dim_embedding)
@@ -34,8 +34,7 @@ ig_generator = InfoGainQueryGenerator([(-1,1)] * dim_embedding)
 cma_es = CMAESGenerator(dim_embedding,[(-1,1)] * dim_embedding, items_per_query)
 cma_es_ig = CMAESIGGenerator(dim_embedding,[(-1,1)] * dim_embedding, items_per_query)
 
-generators = [cma_es_ig, cma_es, random_generator, ig_generator]
-generators = [cma_es_ig, cma_es, random_generator, ig_generator]
+generators = [cma_es_ig, cma_es, random_generator]
 names = ['CMA-ES-IG', 'CMA-ES','Random', 'IG']
 
 for generator, name in zip(generators, names):
@@ -76,7 +75,6 @@ for generator, name in zip(generators, names):
             best_est_trajectory = all_trajectories[np.argmax(all_trajectories@estimated_omega)]
             regret.append(np.max(all_trajectories@true_preference) - best_est_trajectory@true_preference)
             per_query_alignment.append(np.average([alignment_metric(q, true_preference) for q in query]))
-
 
 
         cumulative_values += [alignment]

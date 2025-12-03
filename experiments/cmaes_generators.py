@@ -10,11 +10,12 @@ def quadratic(x1, x2):
 
 
 class CMAESGenerator:
-    def __init__(self, dim, limits, population_size=10):
-        self.optimizer = CMA(mean=np.zeros(dim), sigma=1.3, population_size=population_size)
+    def __init__(self, dim, limits, population_size=10, sigma=1.3):
+        self.optimizer = CMA(mean=np.zeros(dim), sigma=sigma, population_size=population_size)
         self.dimension = dim
         self.population_size = population_size
         self.limits = limits
+        self.sigma = sigma
 
     def get_query(self, number_queries, reward_parameterization=None, input_model=None):
         '''
@@ -37,18 +38,19 @@ class CMAESGenerator:
         self.optimizer.tell(answer)
 
     def reset(self):
-        self.optimizer = CMA(mean=np.zeros(self.dimension), sigma=1.3, population_size=self.population_size)
+        self.optimizer = CMA(mean=np.zeros(self.dimension), sigma=self.sigma, population_size=self.population_size)
 
 
 
 
 class CMAESIGGenerator:
-    def __init__(self, dim, limits, population_size=10, use_boundary_mediods=False):
-        self.optimizer = CMA(mean=np.zeros(dim), sigma=1.3, population_size=population_size)
+    def __init__(self, dim, limits, population_size=10, use_boundary_mediods=False, sigma=1.3):
+        self.optimizer = CMA(mean=np.zeros(dim), sigma=sigma, population_size=population_size)
         self.dimension = dim
         self.limits = limits
         self.population_size = population_size
         self.use_boundary_mediods = use_boundary_mediods
+        self.sigma = sigma
 
     def _info_gain(self, reward_parameterization, input_model, query):
         '''
@@ -85,7 +87,7 @@ class CMAESIGGenerator:
         self.optimizer.tell(answer)
     
     def reset(self):
-        self.optimizer = CMA(mean=np.zeros(self.dimension), sigma=.5, population_size=self.population_size)
+        self.optimizer = CMA(mean=np.zeros(self.dimension), sigma=self.sigma, population_size=self.population_size)
 
 
 
