@@ -91,6 +91,54 @@ class CMAESIGGenerator:
 
 
 
+class DiscreteCMAESIGGenerator:
+    def __init__(self, dim, limits, trajectory_samples, population_size=10, sigma=1.3):
+        self.optimizer = CMA(mean=np.zeros(dim), sigma=sigma, population_size=population_size)
+        self.dimension = dim
+        self.limits = limits
+        self.population_size = population_size
+        self.sigma = sigma
+        self.trajectory_samples = trajectory_samples
+    
+    def _info_gain(self, reward_parameterization, input_model, query):
+        '''
+
+        '''
+        return reward_parameterization.get_best_entropy(query, input_model) - \
+                reward_parameterization.get_human_entropy(query, input_model)
+
+    def get_query(self, number_queries, reward_parameterization=None, input_model=None):
+        '''
+        '''
+        candidates = []
+
+        for _ in range(100):
+            x = self.optimizer.ask()
+            # get nearest trajectory sample
+            # print(x.shape, self.trajectory_samples.shape)
+            x = self.trajectory_samples[np.argmin(np.linalg.norm(self.trajectory_samples - x, axis=1))]
+            x = np.clip(x, -1, 1)  # Discretize to -1 or 1
+            candidates.append(x)
+
+        kmeans = KMeans(n_clusters=number_queries, n_init="auto").fit(candidates)
+        query = kmeans.cluster_centers_
+
+        return np.array(query)
+    
+    def tell(self, solutions, rankings):
+        '''
+        '''
+        answer = []
+        for i, solution in enumerate(solutions):
+            answer.append((solution, -rankings[i]))
+
+        self.optimizer.tell(answer)
+
+    def reset(self):
+        self.optimizer = CMA(mean=np.zeros(self.dimension), sigma=self.sigma, population_size=self.population_size)
+
+
+
 if __name__ == "__main__":
     optimizer = CMA(mean=np.zeros(2), sigma=1.3)
 

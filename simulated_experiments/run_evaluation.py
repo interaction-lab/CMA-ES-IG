@@ -1,14 +1,12 @@
 import pandas as pd
 import numpy as np
 
-EXPERIMENTAL_DOMAIN = 'lunar_lander'  # 'lunar_lander', 'pylips_appearance', 'blossom_voice', 'driving'
+EXPERIMENTAL_DOMAIN = 'pylips_appearance'  # 'lunar_lander', 'pylips_appearance', 'blossom_voice', 'driving'
 NUM_TRIALS = 100
 MAX_QUERIES = 30
 ITEMS_PER_QUERY = 5
-DIM_EMBEDDING = 8  # 2, 4, 6, 8
-METRICS = ['regret', 'quality_avg', 'quality_min', 'quality_max']
-
-name = 'CMA-ES-IG'  # Name of the generator being evaluated
+DIM_EMBEDDING = 4  # 2, 4, 6, 8
+METRICS = ['alignment', 'regret', 'quality_avg', 'quality_min', 'quality_max']
 
 if __name__ == "__main__":
     all_data = []
@@ -36,10 +34,12 @@ if __name__ == "__main__":
                 trial_df = method_df[method_df['trial'] == trial]
                 x = trial_df['query_num']
                 y = trial_df[metric]
-                auc = np.trapz(y, x) / (x.max() - x.min())
+                # print(x)
+                auc = np.trapezoid(y, x) / (x.max() - x.min())
                 aucs[metric].append(auc)
                 
         for metric in METRICS:
             mean_auc = np.mean(aucs[metric])
             std_auc = np.std(aucs[metric])
-            print(f"Method: {method}, Mean AUC of {metric.capitalize()}: {mean_auc:.4f}, Std AUC of {metric.capitalize()}: {std_auc:.4f}")
+            print(f"Method: {method}, Mean AUC of {metric.capitalize()}: {mean_auc:.4f}, sterr AUC of {metric.capitalize()}: {std_auc/10:.4f}")
+        print('\n')
