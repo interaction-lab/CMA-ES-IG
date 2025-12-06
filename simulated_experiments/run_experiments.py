@@ -19,7 +19,7 @@ from irlpreference.query_generation import InfoGainQueryGenerator, RandomQueryGe
 #
 ##########################################################################################
 
-EXPERIMENTAL_DOMAIN = 'lunar_lander'  # 'lunar_lander', 'pylips_appearance', 'blossom_voice', 'driving'
+EXPERIMENTAL_DOMAIN = 'driving'  # 'lunar_lander', 'pylips_appearance', 'blossom_voice', 'driving'
 
 if EXPERIMENTAL_DOMAIN not in ['lunar_lander', 'pylips_appearance', 'blossom_voice', 'driving']:
     raise ValueError(f"Invalid EXPERIMENTAL_DOMAIN: {EXPERIMENTAL_DOMAIN}")
@@ -83,14 +83,14 @@ if __name__ == "__main__":
                 quality = [alignment_metric(q, true_preference) for q in query]
 
                 # get closest items in dataset to each query item
-                query = np.array(query)
-                dists = cdist(all_trajectories, query)
-                indices = np.argmin(dists, axis=0)
-                closest_items = all_trajectories[indices]
+                # query = np.array(query)
+                # dists = cdist(all_trajectories, query)
+                # indices = np.argmin(dists, axis=0)
+                # closest_items = all_trajectories[indices]
                 
                 # print(f"distance between closest items and query items: {np.mean(np.linalg.norm(closest_items - query, axis=1))}")
 
-                query = closest_items
+                # query = closest_items
 
                 # simulate user choice by iteratively selecting top items to get a ranking
                 sorted_query = []
@@ -128,4 +128,4 @@ if __name__ == "__main__":
                 })
 
         df = pd.DataFrame(data)
-        df.to_csv(f'./{EXPERIMENTAL_DOMAIN}/data/results/{name}_dim{DIM_EMBEDDING}_items{ITEMS_PER_QUERY}.csv', index=False)
+        df.to_csv(f'./{EXPERIMENTAL_DOMAIN}/data/results/{name}_dim{DIM_EMBEDDING}_items{ITEMS_PER_QUERY}_nodiscretization.csv', index=False)
