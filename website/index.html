@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CMA-ES-IG</title>
+  <meta name="description" content="Improving through Interaction: Searching Learned Feature Spaces with CMA-ES-IG. Learn robot behaviour preferences from rankings with queries that are both informative and improve over time.">
+  <meta property="og:title" content="Improving through Interaction: Searching Learned Feature Spaces with CMA-ES-IG">
+  <meta property="og:description" content="Preference learning that is easy to rank and visibly improves. Try teaching a Jaco2 arm how to hand you a cup.">
+  <meta property="og:image" content="static/images/fig1_overview.jpg">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Ccircle cx=%2216%22 cy=%2216%22 r=%2214%22 fill=%22%23e8771e%22/%3E%3Cpath d=%22M9 20l5-9 4 6 5-8%22 fill=%22none%22 stroke=%22white%22 stroke-width=%223%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="static/css/style.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/",
+      "three/examples/jsm/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/",
+      "urdf-loader": "https://cdn.jsdelivr.net/npm/urdf-loader@0.12.3/src/URDFLoader.js"
+    }
+  }
+  </script>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <h1>Improving through Interaction:<br><span>Searching Learned Feature Spaces with CMA-ES-IG</span></h1>
+    <p class="authors">
+      <span>Nathaniel Dennler<sup>1</sup></span>
+      <span>Zhonghao Shi<sup>2</sup></span>
+      <span>Yiran Tao<sup>1</sup></span>
+      <span>Andreea Bobu<sup>1</sup></span>
+      <span>Stefanos Nikolaidis<sup>2</sup></span>
+      <span>Maja Matarić<sup>2</sup></span>
+    </p>
+    <p class="affils"><span><sup>1</sup>Massachusetts Institute of Technology</span><span><sup>2</sup>University of Southern California</span></p>
+    <nav class="links">
+      <a class="btn" href="static/cma-es-ig.pdf"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h9l5 5v15H6z M14 2v6h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>Paper</a>
+      <a class="btn" href="https://github.com/interaction-lab/CMA-ES-IG"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 .5a11.5 11.5 0 0 0-3.6 22.4c.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.2 1.2a11 11 0 0 1 5.8 0c2.2-1.5 3.2-1.2 3.2-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.9 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A11.5 11.5 0 0 0 12 .5Z"/></svg>Code</a>
+      <a class="btn btn-accent" href="#try"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v16l13-8z" fill="currentColor"/></svg>Try the demo</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="wrap">
+    <figure class="teaser">
+      <img src="static/images/fig1_overview.jpg" alt="Three query-generation strategies on a feature sphere and the Jaco2 handovers they produce: information gain gives distinct but low-quality handovers, CMA-ES gives high-quality but similar ones, and CMA-ES-IG gives handovers that are both distinct and high quality." width="1800" height="1027">
+      <figcaption><b>Distinct <em>and</em> improving.</b> Information gain (a) asks about behaviours that are easy to tell apart but don't get better. CMA-ES (b) gets better but proposes look-alike behaviours that are hard to rank. CMA-ES-IG (c) does both.</figcaption>
+    </figure>
+    <p class="tldr"><b>TL;DR</b> Robots that learn from people's rankings usually pick questions only to learn as quickly as possible, so what they show users doesn't visibly improve. CMA-ES-IG samples candidates from an evolving CMA-ES search distribution and keeps a perceptually distinct, informative subset. In simulation it learns preferences as accurately as the baselines while showing better behaviours, and real users preferred it.</p>
+  </section>
+
+  <!-- ===================================================================== -->
+  <section id="try" class="band">
+    <div class="wrap">
+      <h2>Try it: teach a Jaco2 how to hand you a cup</h2>
+      <p class="lede">These are the same 1,000 handover trajectories our study participants ranked on the real robot. You sit across the table (the translucent figure). Each round, CMA-ES-IG shows you three. Rank them however you like. Everything runs in your browser.</p>
+
+      <div id="demo" class="demo">
+        <div class="demo-viewport">
+          <div class="demo-loading" role="status">Loading…</div>
+          <div class="demo-toast" hidden></div>
+          <div class="demo-overlay">
+            <button class="chip" data-replay title="Replay the handovers">↻ Replay</button>
+            <div class="seg" role="group" aria-label="Camera">
+              <button class="chip" data-view="All">All</button>
+              <button class="chip" data-view="A">A</button>
+              <button class="chip" data-view="B">B</button>
+              <button class="chip" data-view="C">C</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="demo-panel">
+          <div class="rank-col">
+          <div class="algo-seg" role="radiogroup" aria-label="Query generation algorithm">
+            <button role="radio" aria-checked="true" data-algo="CMA-ES-IG">CMA-ES-IG</button>
+            <button role="radio" aria-checked="false" data-algo="CMA-ES">CMA-ES</button>
+            <button role="radio" aria-checked="false" data-algo="Infogain">Infogain</button>
+          </div>
+          <p class="sub">Switching algorithms starts a fresh session.</p>
+          <div class="panel-head">
+            <h3 data-round>Round 1</h3>
+          </div>
+          <p class="hint" data-hint>Watch all three, then click your favourite first.</p>
+
+          <div class="cards">
+            <button class="card" data-card style="--lane:#0072b2"><span class="dot">A</span><span class="place" data-place>—</span></button>
+            <button class="card" data-card style="--lane:#d55e00"><span class="dot">B</span><span class="place" data-place>—</span></button>
+            <button class="card" data-card style="--lane:#009e73"><span class="dot">C</span><span class="place" data-place>—</span></button>
+          </div>
+          <p class="sub">You can also click a robot in the scene. Click a ranked one again to undo.</p>
+
+          <div class="row">
+            <button class="primary" data-submit disabled>Submit ranking</button>
+            <button class="ghost" data-clear disabled>Clear</button>
+          </div>
+          <p class="thinking" data-thinking hidden>Updating…</p>
+          <button class="secondary" data-best disabled>Show robot's best guess</button>
+
+          <details class="settings">
+            <summary>Settings</summary>
+            <label>Playback speed <span data-speed-value>2×</span>
+              <input type="range" min="0.5" max="4" step="0.25" value="2" data-speed>
+            </label>
+            <label class="check"><input type="checkbox" checked data-paths> Show hand paths</label>
+            <button class="ghost" data-restart>Start over</button>
+          </details>
+          </div>
+
+          <details class="inside" open>
+            <summary>Inside the algorithm</summary>
+            <p class="sub" data-caption>All 1,000 handovers in the learned feature space (2-D PCA view). CMA-ES-IG draws 100 samples (<i class="sw sw-sample"></i>) from its search distribution (<i class="sw sw-dist"></i>), clusters them with K-means, and shows you the handovers nearest the 3 centroids. ★ = the robot's current best guess.</p>
+            <svg class="space" data-space role="img" aria-label="Feature space plot"></svg>
+          </details>
+        </div>
+      </div>
+      <p class="fine">The robot model is the Kinova <code>j2n6s300</code> URDF from <a href="https://github.com/Kinovarobotics/kinova-ros">kinova-ros</a>. The features are an 8-D autoencoder embedding of the trajectories. The robot's guess comes from a particle belief over a linear reward, updated with the Plackett–Luce model.</p>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <section class="wrap">
+    <h2>Abstract</h2>
+    <p>Robots that interact with humans must adapt to individual users' preferences to operate effectively in human-centered environments. An intuitive approach to learning non-expert users' preferences is through rankings of robot behaviors, such as trajectories, gestures, or voices. However, existing preference-learning techniques primarily optimize learning outcomes, such as sample efficiency and preference estimation accuracy, without explicitly accounting for how users experience the teaching process. In particular, while optimizing for information gain efficiently learns user preferences, it does not guarantee that the behaviors presented to users improve over time. This work introduces Covariance Matrix Adaptation Evolution Strategy with Information Gain (CMA-ES-IG), an algorithm that incorporates user experience into preference learning by generating candidate robot behaviors that are informative while additionally exhibiting improvement throughout the teaching process. Compared to state-of-the-art alternatives, CMA-ES-IG (1) scales more effectively to higher-dimensional preference spaces, (2) achieves comparable preference recovery while producing higher-quality queries across diverse learned feature representations, and (3) is preferred by non-expert users eliciting robot preferences through rankings. Our results highlight the importance of considering both learning outcomes and the user experience when designing preference-learning algorithms for human-centered robotics.</p>
+  </section>
+
+  <section class="wrap">
+    <h2>Method</h2>
+    <p>Each behaviour <i>ξ</i> is described by features <i>Φ(ξ)</i>, which can be hand-crafted or learned (an autoencoder, PCA, or pretrained embeddings). We model the user's reward as <i>ω</i><sup>⊤</sup><i>Φ(ξ)</i> and their rankings with the Plackett–Luce model. CMA-ES-IG combines two complementary ideas:</p>
+    <ol class="steps">
+      <li><span>1</span><div><b>Sample</b><p>Draw <i>D</i> = 100 candidates from the CMA-ES search distribution <i>N</i>(<i>μ</i>, <i>C</i>), which concentrates on high-reward regions.</p></div></li>
+      <li><span>2</span><div><b>Diversify</b><p>Cluster them with K-means and show the <i>K</i> centroids. They are spread out, so easy to tell apart (the geometric goal of information gain), yet still representative of the distribution.</p></div></li>
+      <li><span>3</span><div><b>Rank</b><p>The user orders the <i>K</i> behaviours. The belief over <i>ω</i> is updated with Bayes' rule.</p></div></li>
+      <li><span>4</span><div><b>Adapt</b><p>The ranking drives the CMA-ES update of <i>μ</i> and <i>C</i>, moving the search toward what the user likes.</p></div></li>
+    </ol>
+    <p>Query generation takes under 1 ms even in 32 dimensions. That is about <b>10,800× faster</b> than optimising information gain directly (0.91 ms vs. 9.9 s).</p>
+  </section>
+
+  <section class="wrap">
+    <h2>Results</h2>
+
+    <h3>Simulation: scaling with feature dimension</h3>
+    <p>In parameter-estimation tasks with <i>d</i> ∈ {4, 8, 16, 32}, CMA-ES-IG was non-inferior to every baseline in alignment and regret (margin 0.05). It produced significantly <b>higher-quality queries</b> than Infogain, Informative+Revealing, and CMA-ES at every dimension, and its lead over CMA-ES grew with dimension.</p>
+    <figure><img src="static/images/fig2_rq1.png" alt="Alignment, normalized regret and query quality over 30 iterations for d = 4, 8, 16, 32; CMA-ES-IG has the highest quality curve in every dimension." loading="lazy"><figcaption>Mean ± SE over 100 simulated users.</figcaption></figure>
+
+    <div class="table-wrap">
+      <table>
+        <caption>Mean query-generation time</caption>
+        <thead><tr><th>Algorithm</th><th>d = 4</th><th>d = 8</th><th>d = 16</th><th>d = 32</th></tr></thead>
+        <tbody>
+          <tr><td>Infogain</td><td>172 ms</td><td>620 ms</td><td>4407 ms</td><td>9900 ms</td></tr>
+          <tr><td>Informative+Revealing</td><td>42.7 ms</td><td>47.6 ms</td><td>56.1 ms</td><td>74.5 ms</td></tr>
+          <tr><td>CMA-ES</td><td>0.02 ms</td><td>0.02 ms</td><td>0.02 ms</td><td>0.03 ms</td></tr>
+          <tr class="hl"><td>CMA-ES-IG</td><td>0.72 ms</td><td>0.73 ms</td><td>0.79 ms</td><td>0.91 ms</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Simulation: across learned feature spaces</h3>
+    <p>The same pattern holds in four robot tasks that each use a different kind of feature space: random neural features (Lunar Lander), a VAE latent space (Driving), hand-crafted features (Robot Face Design), and pretrained embeddings + PCA (Robot Voice Design).</p>
+    <figure><img src="static/images/fig3_sim_tasks.jpg" alt="The four simulated tasks: Lunar Lander, Driving, Robot Face Design, Robot Voice Design." loading="lazy"></figure>
+    <figure><img src="static/images/fig4_rq2.png" alt="Alignment, regret and quality curves for the four simulated tasks; CMA-ES-IG reaches high quality fastest." loading="lazy"><figcaption>All algorithms learn comparably. CMA-ES-IG reaches high-quality queries fastest.</figcaption></figure>
+
+    <h3>User study: real people, real robots</h3>
+    <p>14 participants taught a Kinova Jaco2 how to hand over a marker, cup, or spoon, and a Blossom robot how to gesture happiness, sadness, or anger. Each used Infogain, CMA-ES, and CMA-ES-IG (algorithm names hidden).</p>
+    <div class="two">
+      <figure><img src="static/images/fig5_robots.jpg" alt="Jaco2 handover trajectories and Blossom gestures." loading="lazy"></figure>
+      <figure><img src="static/images/fig6_interface.jpg" alt="The ranking interface used in the study." loading="lazy"></figure>
+    </div>
+    <div class="stats">
+      <div><b>W = 15.5, p = .035</b><span>CMA-ES-IG felt more <em>adaptive</em> than Infogain</span></div>
+      <div><b>W = 5, p = .008</b><span>CMA-ES-IG was <em>easier to use</em> than CMA-ES</span></div>
+      <div><b>1.50 vs .86 vs .64</b><span>mean preference rank (0–2): CMA-ES-IG &gt; CMA-ES &gt; Infogain</span></div>
+    </div>
+    <figure><img src="static/images/fig7_user_study.png" alt="Box plots of behavioral adaptation and ease of use, and stacked bars of preference rank; CMA-ES-IG ranked first in 63% of sessions." loading="lazy"><figcaption>CMA-ES-IG was ranked first in 63% of sessions.</figcaption></figure>
+  </section>
+
+  <section class="wrap">
+    <h2>BibTeX</h2>
+    <div class="bib">
+      <button class="copy" type="button" data-copy="#bibtex">Copy</button>
+<pre id="bibtex">@misc{dennler2026cmaesig,
+  title         = {Improving through Interaction: Searching Behavioral Representation Spaces with {CMA-ES-IG}},
+  author        = {Dennler, Nathaniel and Shi, Zhonghao and Tao, Yiran and Bobu, Andreea and Nikolaidis, Stefanos and Matari{\'c}, Maja},
+  year          = {2026},
+  eprint        = {2603.09011},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.RO},
+  url           = {https://arxiv.org/abs/2603.09011}
+}</pre>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap">
+  <p>The handover demo uses <a href="https://threejs.org">three.js</a> and <a href="https://github.com/gkjohnson/urdf-loaders">urdf-loader</a>.</p>
+</footer>
+
+<script>
+  document.querySelectorAll("[data-copy]").forEach((b) => b.addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText(document.querySelector(b.dataset.copy).textContent); b.textContent = "Copied"; }
+    catch { b.textContent = "Select & copy"; }
+    setTimeout(() => (b.textContent = "Copy"), 1600);
+  }));
+</script>
+<script type="module" src="static/js/demo.js"></script>
+</body>
+</html>

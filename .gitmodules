@@ -1,0 +1,6 @@
+[submodule "experiments/preference-learning-from-selection"]
+	path = experiments/preference-learning-from-selection
+	url = git@github.com:ndennler/preference-learning-from-selection.git
+[submodule "user_study/preference-learning-from-selection"]
+	path = user_study/preference-learning-from-selection
+	url = git@github.com:ndennler/preference-learning-from-selection.git

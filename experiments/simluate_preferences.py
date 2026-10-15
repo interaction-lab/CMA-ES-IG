@@ -59,15 +59,24 @@ for generator, name in zip(generators, names):
         for _ in range(max_number_of_queries):
             query = generator.get_query(items_per_query, user_estimate, user_choice_model) #generates choice between two options
             # choice = np.argmax(user_choice_model.get_choice_probabilities(query, np.array([true_preference]))) #selects choice from model
-            probabilities = user_choice_model.get_choice_probabilities(query, np.array([true_preference])).flatten()
-            choice = np.random.choice(np.arange(items_per_query), p=probabilities)
-            user_choice_model.tell_input(choice, query)
+            # simulate a full ranking by repeatedly sampling the top remaining
+            # item, matching simulated_experiments/run_experiments.py.  Passing
+            # probabilities.argsort() to the generator instead would hand CMA-ES
+            # a noiseless oracle ranking, since the choice probabilities are a
+            # monotone function of the true reward.
+            working = np.array(query)
+            sorted_query = []
+            for _ in range(items_per_query - 1):
+                probabilities = user_choice_model.get_choice_probabilities(working, np.array([true_preference])).flatten()
+                choice = np.random.choice(np.arange(len(working)), p=probabilities)
+                user_choice_model.tell_input(choice, working)
+                user_estimate.update(user_choice_model.get_probability_of_input)
+                sorted_query.append(working[choice])
+                working = np.delete(working, choice, axis=0)
+            sorted_query.append(working[0])
 
             if name == 'CMA-ES' or name == 'CMA-ES-IG':
-                ranking = probabilities.argsort().argsort() #gets the indices
-                generator.tell(list(query), ranking)
-
-            user_estimate.update(user_choice_model.get_probability_of_input)   
+                generator.tell(sorted_query, list(range(items_per_query))[::-1])
 
             estimated_omega = user_estimate.get_expectation()
 

@@ -1,0 +1,27 @@
+\begin{table}[t]
+\centering
+\caption{Non-inferiority of CMA-ES-IG in the parameter estimation task (RQ1). Difference in mean AUC (CMA-ES-IG minus baseline) with Welch 95\% confidence intervals over 100 simulated users. CMA-ES-IG is non-inferior ($\checkmark$) when the interval excludes a loss larger than $\Delta=0.05$ for alignment and $\Delta=0.05$ for normalized regret.}
+\label{tab:noninferiority_rq1}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{ll cc}
+\toprule
+\textbf{Baseline} & & \textbf{Alignment ($\uparrow$)} & \textbf{Norm.\ regret ($\downarrow$)} \\
+\midrule
+Infogain & $d=4$ & $-0.009$ [$-0.012$, $-0.005$] $\checkmark$ & $+0.006$ [$+0.003$, $+0.009$] $\checkmark$ \\
+ & $d=8$ & $-0.012$ [$-0.017$, $-0.007$] $\checkmark$ & $+0.007$ [$+0.001$, $+0.012$] $\checkmark$ \\
+ & $d=16$ & $-0.018$ [$-0.025$, $-0.011$] $\checkmark$ & $+0.008$ [$+0.001$, $+0.016$] $\checkmark$ \\
+ & $d=32$ & $+0.000$ [$-0.010$, $+0.011$] $\checkmark$ & $+0.004$ [$-0.007$, $+0.016$] $\checkmark$ \\
+\midrule
+Informative+Revealing & $d=4$ & $-0.002$ [$-0.006$, $+0.003$] $\checkmark$ & $+0.004$ [$+0.000$, $+0.007$] $\checkmark$ \\
+ & $d=8$ & $-0.007$ [$-0.012$, $-0.002$] $\checkmark$ & $+0.007$ [$+0.001$, $+0.012$] $\checkmark$ \\
+ & $d=16$ & $-0.017$ [$-0.024$, $-0.010$] $\checkmark$ & $+0.005$ [$-0.002$, $+0.013$] $\checkmark$ \\
+ & $d=32$ & $-0.022$ [$-0.031$, $-0.013$] $\checkmark$ & $+0.010$ [$-0.001$, $+0.022$] $\checkmark$ \\
+\midrule
+CMA-ES & $d=4$ & $+0.001$ [$-0.003$, $+0.006$] $\checkmark$ & $-0.000$ [$-0.004$, $+0.004$] $\checkmark$ \\
+ & $d=8$ & $-0.004$ [$-0.009$, $+0.001$] $\checkmark$ & $+0.006$ [$-0.000$, $+0.011$] $\checkmark$ \\
+ & $d=16$ & $-0.007$ [$-0.013$, $-0.000$] $\checkmark$ & $+0.006$ [$-0.002$, $+0.014$] $\checkmark$ \\
+ & $d=32$ & $-0.008$ [$-0.018$, $+0.002$] $\checkmark$ & $+0.008$ [$-0.003$, $+0.019$] $\checkmark$ \\
+\bottomrule
+\end{tabular}
+}
+\end{table}

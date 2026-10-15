@@ -1,0 +1,19 @@
+\begin{table*}[t]
+\centering
+\caption{Mean accuracy metrics across simulated robot tasks, with the informative+revealing baseline of Habibian et al. added. AUC of alignment ($\uparrow$) and normalized regret ($\downarrow$), 100 simulated users per domain.}
+\label{tab:simulated_results}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{l cc cc cc cc}
+\toprule
+\multirow{2}{*}{\textbf{Algorithm}} & \multicolumn{2}{c}{\textbf{Lunar Lander}} & \multicolumn{2}{c}{\textbf{Driving}} & \multicolumn{2}{c}{\textbf{Robot Face Design}} & \multicolumn{2}{c}{\textbf{Robot Voice Design}} \\
+\cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7} \cmidrule(lr){8-9}
+& Alignment $\uparrow$ & Norm.\ Regret $\downarrow$ & Alignment $\uparrow$ & Norm.\ Regret $\downarrow$ & Alignment $\uparrow$ & Norm.\ Regret $\downarrow$ & Alignment $\uparrow$ & Norm.\ Regret $\downarrow$ \\
+\midrule
+Infogain & $\bm{0.990} \pm {\scriptstyle 0.001}$ & $\bm{0.005} \pm {\scriptstyle 0.001}$ & $\bm{0.990} \pm {\scriptstyle 0.001}$ & $\bm{0.005} \pm {\scriptstyle 0.001}$ & $\bm{0.992} \pm {\scriptstyle 0.001}$ & $\bm{0.004} \pm {\scriptstyle 0.001}$ & $\bm{0.991} \pm {\scriptstyle 0.001}$ & $\bm{0.005} \pm {\scriptstyle 0.001}$ \\
+Informative+Revealing & $0.982 \pm {\scriptstyle 0.001}$ & $0.010 \pm {\scriptstyle 0.001}$ & $0.981 \pm {\scriptstyle 0.001}$ & $0.010 \pm {\scriptstyle 0.001}$ & $0.981 \pm {\scriptstyle 0.001}$ & $0.009 \pm {\scriptstyle 0.002}$ & $0.978 \pm {\scriptstyle 0.002}$ & $0.011 \pm {\scriptstyle 0.001}$ \\
+CMA-ES & $0.977 \pm {\scriptstyle 0.002}$ & $0.011 \pm {\scriptstyle 0.002}$ & $0.979 \pm {\scriptstyle 0.001}$ & $0.010 \pm {\scriptstyle 0.001}$ & $0.972 \pm {\scriptstyle 0.002}$ & $0.016 \pm {\scriptstyle 0.003}$ & $0.979 \pm {\scriptstyle 0.001}$ & $0.011 \pm {\scriptstyle 0.001}$ \\
+CMA-ES-IG & $0.974 \pm {\scriptstyle 0.002}$ & $0.014 \pm {\scriptstyle 0.003}$ & $0.978 \pm {\scriptstyle 0.002}$ & $0.011 \pm {\scriptstyle 0.002}$ & $0.980 \pm {\scriptstyle 0.001}$ & $0.009 \pm {\scriptstyle 0.002}$ & $0.974 \pm {\scriptstyle 0.003}$ & $0.011 \pm {\scriptstyle 0.002}$ \\
+\bottomrule
+\end{tabular}
+}
+\end{table*}

@@ -1,0 +1,25 @@
+\begin{table*}[t]
+\centering
+\caption{Ellipsoid confidence-mass sweep for the information-gain approximation, run with the analytic-gradient optimiser so that every mass receives the same iteration budget at every dimension. The deployed $k$-means rule is shown for reference. 100 simulated users.}
+\label{tab:ellipsoid_mass}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{l cccc cccc}
+\toprule
+\multirow{2}{*}{\textbf{Confidence mass}} & \multicolumn{4}{c}{\textbf{AUC Quality ($\uparrow$)}} & \multicolumn{4}{c}{\textbf{AUC Normalized Regret ($\downarrow$)}} \\
+\cmidrule(lr){2-5} \cmidrule(lr){6-9}
+& $d=4$ & $d=8$ & $d=16$ & $d=32$ & $d=4$ & $d=8$ & $d=16$ & $d=32$ \\
+\midrule
+1\% & $0.789 \pm {\scriptstyle 0.010}$ & $0.727 \pm {\scriptstyle 0.008}$ & $0.587 \pm {\scriptstyle 0.007}$ & $0.420 \pm {\scriptstyle 0.005}$ & $0.024 \pm {\scriptstyle 0.004}$ & $0.022 \pm {\scriptstyle 0.002}$ & $0.040 \pm {\scriptstyle 0.002}$ & $\bm{0.093} \pm {\scriptstyle 0.003}$ \\
+5\% & $0.742 \pm {\scriptstyle 0.012}$ & $0.635 \pm {\scriptstyle 0.012}$ & $0.519 \pm {\scriptstyle 0.007}$ & $0.386 \pm {\scriptstyle 0.006}$ & $0.013 \pm {\scriptstyle 0.002}$ & $\bm{0.016} \pm {\scriptstyle 0.001}$ & $0.042 \pm {\scriptstyle 0.002}$ & $0.097 \pm {\scriptstyle 0.003}$ \\
+10\% & $0.673 \pm {\scriptstyle 0.014}$ & $0.578 \pm {\scriptstyle 0.013}$ & $0.493 \pm {\scriptstyle 0.009}$ & $0.363 \pm {\scriptstyle 0.006}$ & $0.009 \pm {\scriptstyle 0.002}$ & $0.018 \pm {\scriptstyle 0.001}$ & $0.041 \pm {\scriptstyle 0.002}$ & $0.094 \pm {\scriptstyle 0.003}$ \\
+25\% & $0.544 \pm {\scriptstyle 0.019}$ & $0.526 \pm {\scriptstyle 0.010}$ & $0.447 \pm {\scriptstyle 0.009}$ & $0.332 \pm {\scriptstyle 0.005}$ & $0.007 \pm {\scriptstyle 0.001}$ & $0.016 \pm {\scriptstyle 0.001}$ & $\bm{0.037} \pm {\scriptstyle 0.002}$ & $0.095 \pm {\scriptstyle 0.003}$ \\
+50\% & $0.481 \pm {\scriptstyle 0.019}$ & $0.442 \pm {\scriptstyle 0.012}$ & $0.423 \pm {\scriptstyle 0.008}$ & $0.311 \pm {\scriptstyle 0.005}$ & $\bm{0.006} \pm {\scriptstyle 0.001}$ & $0.018 \pm {\scriptstyle 0.001}$ & $0.044 \pm {\scriptstyle 0.002}$ & $0.102 \pm {\scriptstyle 0.003}$ \\
+75\% & $0.353 \pm {\scriptstyle 0.013}$ & $0.408 \pm {\scriptstyle 0.011}$ & $0.357 \pm {\scriptstyle 0.008}$ & $0.280 \pm {\scriptstyle 0.005}$ & $0.007 \pm {\scriptstyle 0.001}$ & $0.018 \pm {\scriptstyle 0.001}$ & $0.043 \pm {\scriptstyle 0.002}$ & $0.103 \pm {\scriptstyle 0.003}$ \\
+90\% & $0.261 \pm {\scriptstyle 0.011}$ & $0.359 \pm {\scriptstyle 0.009}$ & $0.330 \pm {\scriptstyle 0.007}$ & $0.267 \pm {\scriptstyle 0.005}$ & $0.007 \pm {\scriptstyle 0.001}$ & $0.019 \pm {\scriptstyle 0.001}$ & $0.043 \pm {\scriptstyle 0.002}$ & $0.099 \pm {\scriptstyle 0.003}$ \\
+99\% & $0.190 \pm {\scriptstyle 0.010}$ & $0.280 \pm {\scriptstyle 0.009}$ & $0.295 \pm {\scriptstyle 0.006}$ & $0.237 \pm {\scriptstyle 0.005}$ & $0.007 \pm {\scriptstyle 0.001}$ & $0.020 \pm {\scriptstyle 0.001}$ & $0.047 \pm {\scriptstyle 0.002}$ & $0.102 \pm {\scriptstyle 0.003}$ \\
+\midrule
+$k$-means, pool 100 & $\bm{0.830} \pm {\scriptstyle 0.006}$ & $\bm{0.775} \pm {\scriptstyle 0.005}$ & $\bm{0.647} \pm {\scriptstyle 0.005}$ & $\bm{0.471} \pm {\scriptstyle 0.004}$ & $0.011 \pm {\scriptstyle 0.001}$ & $0.026 \pm {\scriptstyle 0.002}$ & $0.058 \pm {\scriptstyle 0.003}$ & $0.114 \pm {\scriptstyle 0.004}$ \\
+\bottomrule
+\end{tabular}
+}
+\end{table*}

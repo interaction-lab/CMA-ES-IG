@@ -1,0 +1,19 @@
+\begin{table*}[t]
+\centering
+\caption{Mean accuracy metrics across simulated robot tasks, with the informative+revealing baseline of Habibian et al. added. Alignment ($\uparrow$) and Regret ($\downarrow$), 100 simulated users per domain.}
+\label{tab:simulated_results}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{l cc cc cc cc}
+\toprule
+\multirow{2}{*}{\textbf{Algorithm}} & \multicolumn{2}{c}{\textbf{Lunar Lander}} & \multicolumn{2}{c}{\textbf{Driving}} & \multicolumn{2}{c}{\textbf{Robot Face Design}} & \multicolumn{2}{c}{\textbf{Robot Voice Design}} \\
+\cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7} \cmidrule(lr){8-9}
+& Alignment $\uparrow$ & Regret $\downarrow$ & Alignment $\uparrow$ & Regret $\downarrow$ & Alignment $\uparrow$ & Regret $\downarrow$ & Alignment $\uparrow$ & Regret $\downarrow$ \\
+\midrule
+Infogain & $\bm{0.959} \pm {\scriptstyle 0.001}$ & $\bm{0.004} \pm {\scriptstyle 0.001}$ & $\bm{0.959} \pm {\scriptstyle 0.001}$ & $\bm{0.007} \pm {\scriptstyle 0.001}$ & $\bm{0.960} \pm {\scriptstyle 0.000}$ & $\bm{0.005} \pm {\scriptstyle 0.001}$ & $\bm{0.955} \pm {\scriptstyle 0.005}$ & $\bm{0.006} \pm {\scriptstyle 0.001}$ \\
+Informative+Revealing & $0.950 \pm {\scriptstyle 0.001}$ & $0.012 \pm {\scriptstyle 0.002}$ & $0.949 \pm {\scriptstyle 0.001}$ & $0.013 \pm {\scriptstyle 0.002}$ & $0.949 \pm {\scriptstyle 0.001}$ & $0.014 \pm {\scriptstyle 0.002}$ & $0.944 \pm {\scriptstyle 0.002}$ & $0.014 \pm {\scriptstyle 0.001}$ \\
+CMA-ES & $0.942 \pm {\scriptstyle 0.001}$ & $0.019 \pm {\scriptstyle 0.002}$ & $0.940 \pm {\scriptstyle 0.002}$ & $0.026 \pm {\scriptstyle 0.004}$ & $0.943 \pm {\scriptstyle 0.002}$ & $0.016 \pm {\scriptstyle 0.004}$ & $0.943 \pm {\scriptstyle 0.002}$ & $0.016 \pm {\scriptstyle 0.002}$ \\
+CMA-ES-IG & $0.939 \pm {\scriptstyle 0.003}$ & $0.015 \pm {\scriptstyle 0.003}$ & $0.944 \pm {\scriptstyle 0.002}$ & $0.020 \pm {\scriptstyle 0.003}$ & $0.946 \pm {\scriptstyle 0.001}$ & $0.015 \pm {\scriptstyle 0.005}$ & $0.944 \pm {\scriptstyle 0.002}$ & $0.014 \pm {\scriptstyle 0.003}$ \\
+\bottomrule
+\end{tabular}
+}
+\end{table*}

@@ -80,3 +80,6 @@ instance/
 # IPython
 profile_default/
 ipython_config.py
+
+# Reference papers (PDFs, not redistributable)
+reference/

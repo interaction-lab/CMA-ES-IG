@@ -1,0 +1,15 @@
+\begin{table}[t]
+\centering
+\caption{Mean runtime (in milliseconds) for query generation methods, measured on identical hardware. Values averaged across repeated calls at each representation dimension ($d$).}
+\label{tab:runtime}
+\begin{tabular}{l cccc}
+\toprule
+\textbf{Algorithm} & $d=4$ & $d=8$ & $d=16$ & $d=32$ \\
+\midrule
+CMA-ES-IG & 0.8 ms & 0.8 ms & 0.8 ms & 11.7 ms \\
+CMA-ES & 0.0 ms & 0.0 ms & 0.0 ms & 0.0 ms \\
+Infogain & 70.5 ms & 382 ms & 2771 ms & 7147 ms \\
+Informative+Revealing & 35.2 ms & 38.7 ms & 44.8 ms & 54.4 ms \\
+\bottomrule
+\end{tabular}
+\end{table}
