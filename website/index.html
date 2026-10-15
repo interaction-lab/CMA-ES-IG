@@ -78,46 +78,42 @@
 
         <div class="demo-panel">
           <div class="rank-col">
-          <div class="algo-seg" role="radiogroup" aria-label="Query generation algorithm">
-            <button role="radio" aria-checked="true" data-algo="CMA-ES-IG">CMA-ES-IG</button>
-            <button role="radio" aria-checked="false" data-algo="CMA-ES">CMA-ES</button>
-            <button role="radio" aria-checked="false" data-algo="Infogain">Infogain</button>
-          </div>
-          <p class="sub">Switching algorithms starts a fresh session.</p>
-          <div class="panel-head">
-            <h3 data-round>Round 1</h3>
-          </div>
-          <p class="hint" data-hint>Watch all three, then click your favourite first.</p>
+            <div class="panel-head">
+              <h3 data-round>Round 1</h3>
+            </div>
+            <p class="hint" data-hint>Watch all three, then click your favourite first.</p>
 
-          <div class="cards">
-            <button class="card" data-card style="--lane:#0072b2"><span class="dot">A</span><span class="place" data-place>—</span></button>
-            <button class="card" data-card style="--lane:#d55e00"><span class="dot">B</span><span class="place" data-place>—</span></button>
-            <button class="card" data-card style="--lane:#009e73"><span class="dot">C</span><span class="place" data-place>—</span></button>
-          </div>
-          <p class="sub">You can also click a robot in the scene. Click a ranked one again to undo.</p>
+            <div class="cards">
+              <button class="card" data-card style="--lane:#0072b2"><span class="dot">A</span><span class="place" data-place>—</span></button>
+              <button class="card" data-card style="--lane:#d55e00"><span class="dot">B</span><span class="place" data-place>—</span></button>
+              <button class="card" data-card style="--lane:#009e73"><span class="dot">C</span><span class="place" data-place>—</span></button>
+            </div>
+            <p class="sub">You can also click a robot in the scene. Click a ranked one again to undo.</p>
 
-          <div class="row">
-            <button class="primary" data-submit disabled>Submit ranking</button>
-            <button class="ghost" data-clear disabled>Clear</button>
+            <div class="row">
+              <button class="primary" data-submit disabled>Submit ranking</button>
+              <button class="ghost" data-clear disabled>Clear</button>
+            </div>
+            <p class="thinking" data-thinking hidden>Updating…</p>
+            <button class="secondary" data-best disabled>Show robot's best guess</button>
           </div>
-          <p class="thinking" data-thinking hidden>Updating…</p>
-          <button class="secondary" data-best disabled>Show robot's best guess</button>
 
-          <details class="settings">
-            <summary>Settings</summary>
+          <div class="settings">
+            <div class="panel-head">
+              <h3>Settings</h3>
+            </div>
+            <div class="algo-seg" role="radiogroup" aria-label="Query generation algorithm">
+              <button role="radio" aria-checked="true" data-algo="CMA-ES-IG">CMA-ES-IG</button>
+              <button role="radio" aria-checked="false" data-algo="CMA-ES">CMA-ES</button>
+              <button role="radio" aria-checked="false" data-algo="Infogain">Infogain</button>
+            </div>
+            <p class="sub"><span data-caption>CMA-ES-IG draws 100 samples from its search distribution, clusters them with K-means, and shows you the handovers nearest the 3 centroids.</span> Switching algorithms starts a fresh session.</p>
             <label>Playback speed <span data-speed-value>2×</span>
               <input type="range" min="0.5" max="4" step="0.25" value="2" data-speed>
             </label>
-            <label class="check"><input type="checkbox" checked data-paths> Show hand paths</label>
+            <label class="check"><input type="checkbox" checked data-paths> Show hand paths (arrows: which way is up for the cup)</label>
             <button class="ghost" data-restart>Start over</button>
-          </details>
           </div>
-
-          <details class="inside" open>
-            <summary>Inside the algorithm</summary>
-            <p class="sub" data-caption>All 1,000 handovers in the learned feature space (2-D PCA view). CMA-ES-IG draws 100 samples (<i class="sw sw-sample"></i>) from its search distribution (<i class="sw sw-dist"></i>), clusters them with K-means, and shows you the handovers nearest the 3 centroids. ★ = the robot's current best guess.</p>
-            <svg class="space" data-space role="img" aria-label="Feature space plot"></svg>
-          </details>
         </div>
       </div>
       <p class="fine">The robot model is the Kinova <code>j2n6s300</code> URDF from <a href="https://github.com/Kinovarobotics/kinova-ros">kinova-ros</a>. The features are an 8-D autoencoder embedding of the trajectories. The robot's guess comes from a particle belief over a linear reward, updated with the Plackett–Luce model.</p>

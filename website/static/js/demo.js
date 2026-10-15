@@ -3,7 +3,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer.js";
 import URDFLoader from "urdf-loader";
-import { ALGORITHMS, ParticleBelief, RNG, eighSym, standardise } from "./cmaesig.js";
+import { ALGORITHMS, ParticleBelief, RNG, standardise } from "./cmaesig.js";
 
 const ROOT = new URL("..", import.meta.url).href; // .../static/
 const N_TRAJ = 1000, T = 50, DOF = 6, FEAT = 8;
@@ -23,9 +23,9 @@ const GRIP = { finger: 0.7, finger_tip: 0.1 };
 const EE_LINK = "j2n6s300_end_effector";
 const PLACES = ["1st", "2nd", "3rd"];
 const CAPTIONS = {
-  "CMA-ES-IG": 'CMA-ES-IG draws 100 samples (<i class="sw sw-sample"></i>) from its search distribution (<i class="sw sw-dist"></i>), clusters them with K-means, and shows you the handovers nearest the 3 centroids.',
-  "CMA-ES": 'CMA-ES samples the 3 candidates directly from its search distribution (<i class="sw sw-dist"></i>), so they are often close together and harder to tell apart.',
-  Infogain: "Infogain picks the 3 handovers whose ranking would tell the robot the most about your preference. It has no search distribution, so it doesn't steer toward what you like.",
+  "CMA-ES-IG": "CMA-ES-IG draws 100 samples from its search distribution, clusters them with K-means, and shows you the handovers nearest the 3 centroids.",
+  "CMA-ES": "CMA-ES samples the 3 candidates directly from its search distribution, so they are often close together and harder to tell apart.",
+  Infogain: "Infogain picks the 3 handovers whose ranking would tell the robot the most about your preference. It has no search distribution, so it doesn't steer toward what you like. (To keep the demo responsive, this is an approximation: it scores 300 random triples instead of running the full optimisation used in the paper.)",
 };
 
 const $ = (sel, el = document) => el.querySelector(sel);
@@ -39,18 +39,6 @@ async function loadF32(path) {
   return new Float32Array(await res.arrayBuffer());
 }
 
-function pca2(rows) {
-  const d = rows[0].length, n = rows.length;
-  const mean = new Array(d).fill(0);
-  for (const r of rows) for (let j = 0; j < d; j++) mean[j] += r[j] / n;
-  const cov = Array.from({ length: d }, () => new Array(d).fill(0));
-  for (const r of rows) for (let i = 0; i < d; i++) for (let j = 0; j < d; j++) cov[i][j] += ((r[i] - mean[i]) * (r[j] - mean[j])) / n;
-  const { values, vectors } = eighSym(cov);
-  const order = values.map((v, i) => [v, i]).sort((a, b) => b[0] - a[0]).map(([, i]) => i);
-  const P = order.slice(0, 2).map((c) => vectors.map((row) => row[c]));
-  const project = (x) => P.map((p) => p.reduce((s, v, j) => s + v * (x[j] - mean[j]), 0));
-  return { P, mean, project };
-}
 
 // Catmull-Rom interpolation of a (T x DOF) trajectory at phase in [0, 1].
 function sampleTraj(traj, phase, out) {
@@ -194,8 +182,6 @@ export async function initDemo(container) {
   const [trajRaw, embRaw] = await Promise.all([loadF32("data/handovers.f32"), loadF32("data/embeddings.f32")]);
   const trajectories = Array.from({ length: N_TRAJ }, (_, i) => trajRaw.subarray(i * T * DOF, (i + 1) * T * DOF));
   const features = standardise(Array.from({ length: N_TRAJ }, (_, i) => Array.from(embRaw.subarray(i * FEAT, (i + 1) * FEAT))));
-  const pca = pca2(features);
-  const features2d = features.map(pca.project);
 
   // --- renderer / scene -----------------------------------------------------
   const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -287,7 +273,6 @@ export async function initDemo(container) {
     paths: $("[data-paths]", container),
     replay: $("[data-replay]", container),
     views: [...container.querySelectorAll("[data-view]")],
-    space: $("[data-space]", container),
     thinking: $("[data-thinking]", container),
   };
   const state = {
@@ -310,7 +295,16 @@ export async function initDemo(container) {
     showQuery();
   }
 
+  // CMA-ES methods: the handover nearest the search-distribution mean, which is
+  // where the candidates are drawn from. Infogain has no search distribution, so
+  // it uses the handover with the highest expected reward under the belief.
   const bestIndex = () => {
+    const dist = state.algorithm.searchDistribution();
+    if (dist) {
+      let best = 0, bd = Infinity;
+      features.forEach((f, i) => { const d = f.reduce((s, x, j) => s + (x - dist.mean[j]) ** 2, 0); if (d < bd) { bd = d; best = i; } });
+      return best;
+    }
     const w = state.belief.mean();
     let best = 0, bv = -Infinity;
     features.forEach((f, i) => { const v = f.reduce((s, x, j) => s + x * w[j], 0); if (v > bv) { bv = v; best = i; } });
@@ -320,22 +314,43 @@ export async function initDemo(container) {
   // --- trajectories in the scene --------------------------------------------
   const q = new Float64Array(DOF);
   const tmp = new THREE.Vector3();
+  const quat = new THREE.Quaternion();
+
+  // Orientation markers along the hand path: arrows along the cup's +Y axis in
+  // the end-effector frame (bottom to open top), so you can see how the cup tilts.
+  const N_MARKERS = 8;
+  const shaftGeom = new THREE.CylinderGeometry(0.003, 0.003, 0.04, 6).translate(0, 0.02, 0);
+  const coneGeom = new THREE.ConeGeometry(0.011, 0.025, 12).translate(0, 0.0525, 0);
 
   function setTrajectory(lane, index, color) {
     lane.index = index;
     const traj = trajectories[index];
-    const pts = [];
+    const pts = [], poses = [];
     for (let s = 0; s <= 60; s++) {
       setArm(helper, sampleTraj(traj, s / 60, q));
       helper.updateMatrixWorld(true);
       helper.links[EE_LINK].getWorldPosition(tmp);
       pts.push(tmp.clone());
+      if (s % Math.round(60 / (N_MARKERS - 1)) === 0 || s === 60) {
+        helper.links[EE_LINK].getWorldQuaternion(quat);
+        poses.push([tmp.clone(), quat.clone()]);
+      }
     }
-    if (lane.trail) { lane.rig.remove(lane.trail); lane.trail.geometry.dispose(); }
-    lane.trail = new THREE.Mesh(
-      new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 120, 0.006, 8, false),
-      new THREE.MeshStandardMaterial({ color, roughness: 0.4, transparent: true, opacity: 0.85 }),
-    );
+    if (lane.trail) {
+      lane.rig.remove(lane.trail);
+      lane.trail.children[0].geometry.dispose();
+      lane.trail.children[0].material.dispose();
+    }
+    const mat = new THREE.MeshStandardMaterial({ color, roughness: 0.4, transparent: true, opacity: 0.85 });
+    lane.trail = new THREE.Group();
+    lane.trail.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 120, 0.006, 8, false), mat));
+    for (const [p, r] of poses) {
+      const marker = new THREE.Group();
+      marker.position.copy(p);
+      marker.quaternion.copy(r);
+      marker.add(new THREE.Mesh(shaftGeom, mat), new THREE.Mesh(coneGeom, mat));
+      lane.trail.add(marker);
+    }
     lane.trail.visible = ui.paths.checked;
     lane.rig.add(lane.trail);
   }
@@ -350,8 +365,7 @@ export async function initDemo(container) {
   function refresh() {
     const ranking = state.mode === "rank";
     ui.round.textContent = state.mode === "best" ? "Robot's best guess" : `Round ${state.round + 1}`;
-    ui.caption.innerHTML = "All 1,000 handovers in the learned feature space (2-D PCA view). " + CAPTIONS[state.method] +
-      " ★ = the robot's current best guess.";
+    ui.caption.textContent = CAPTIONS[state.method];
     ui.algos.forEach((b) => {
       const on = b.dataset.algo === state.method;
       b.classList.toggle("active", on);
@@ -380,7 +394,6 @@ export async function initDemo(container) {
       : state.order.length === 0
         ? (state.round === 0 ? "Watch all three, then click your favourite first." : "New candidates! Click your favourite first.")
         : state.order.length < K ? "Now your second favourite." : "Happy with that? Submit your ranking.";
-    drawSpace();
   }
 
   function pick(laneIdx) {
@@ -508,67 +521,6 @@ export async function initDemo(container) {
   }
   new ResizeObserver(resize).observe(viewport);
   resize();
-
-  // --- plots (inline SVG) -----------------------------------------------------
-  const SVG_NS = "http://www.w3.org/2000/svg";
-  const xs = features2d.map((p) => p[0]), ys = features2d.map((p) => p[1]);
-  const ext = { x0: Math.min(...xs), x1: Math.max(...xs), y0: Math.min(...ys), y1: Math.max(...ys) };
-  const pad = 0.12 * Math.max(ext.x1 - ext.x0, ext.y1 - ext.y0);
-  const W = 300, H = 230;
-  const sx = (x) => ((x - ext.x0 + pad) / (ext.x1 - ext.x0 + 2 * pad)) * W;
-  const sy = (y) => H - ((y - ext.y0 + pad) / (ext.y1 - ext.y0 + 2 * pad)) * H;
-  const el = (tag, attrs) => { const e = document.createElementNS(SVG_NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; };
-  ui.space.setAttribute("viewBox", `0 0 ${W} ${H}`);
-  const dataLayer = el("g", {});
-  features2d.forEach((p) => dataLayer.appendChild(el("circle", { cx: sx(p[0]), cy: sy(p[1]), r: 1.6, class: "pt-data" })));
-  ui.space.appendChild(dataLayer);
-  const dynLayer = el("g", {});
-  ui.space.appendChild(dynLayer);
-
-  function drawSpace() {
-    dynLayer.replaceChildren();
-    const dist = state.algorithm.searchDistribution();
-    if (dist) {
-      const m2 = pca.project(dist.mean);
-      const PC = pca.P.map((p) => dist.cov.map((row) => row.reduce((s, v, j) => s + v * p[j], 0)));
-      const c2 = pca.P.map((p) => PC.map((r) => r.reduce((s, v, j) => s + v * p[j], 0)));
-      const { values, vectors } = eighSym(c2);
-      const pts = [];
-      for (let a = 0; a <= 64; a++) {
-        const th = (a / 64) * 2 * Math.PI;
-        const u = [2 * Math.sqrt(Math.max(values[0], 1e-12)) * Math.cos(th), 2 * Math.sqrt(Math.max(values[1], 1e-12)) * Math.sin(th)];
-        pts.push(`${sx(m2[0] + vectors[0][0] * u[0] + vectors[0][1] * u[1])},${sy(m2[1] + vectors[1][0] * u[0] + vectors[1][1] * u[1])}`);
-      }
-      dynLayer.appendChild(el("polygon", { points: pts.join(" "), class: "search-dist" }));
-    }
-    if (state.algorithm.lastSamples.length > K) {
-      for (const s of state.algorithm.lastSamples) {
-        const p = pca.project(s);
-        dynLayer.appendChild(el("circle", { cx: sx(p[0]), cy: sy(p[1]), r: 1.8, class: "pt-sample" }));
-      }
-    }
-    state.history.forEach((h) => h.forEach((i) => {
-      const p = features2d[i];
-      dynLayer.appendChild(el("circle", { cx: sx(p[0]), cy: sy(p[1]), r: 2.4, class: "pt-past" }));
-    }));
-    if (state.mode === "rank") {
-      lanes.forEach((lane) => {
-        const p = features2d[state.query[lane.i]];
-        dynLayer.appendChild(el("circle", { cx: sx(p[0]), cy: sy(p[1]), r: 6, fill: lane.color, class: "pt-query" }));
-        const t = el("text", { x: sx(p[0]), y: sy(p[1]) + 3.2, class: "pt-label" });
-        t.textContent = lane.name;
-        dynLayer.appendChild(t);
-      });
-    }
-    if (state.round > 0) {
-      const p = features2d[bestIndex()];
-      const star = (cx, cy, r) => Array.from({ length: 10 }, (_, k) => {
-        const rr = k % 2 ? r * 0.45 : r, a = (k / 10) * 2 * Math.PI - Math.PI / 2;
-        return `${cx + rr * Math.cos(a)},${cy + rr * Math.sin(a)}`;
-      }).join(" ");
-      dynLayer.appendChild(el("polygon", { points: star(sx(p[0]), sy(p[1]), 8), class: "pt-best" }));
-    }
-  }
 
   // --- animation loop -----------------------------------------------------------
   function frame(now) {
