@@ -19,7 +19,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--ink);
-  font: 17px/1.65 Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font: 17px/1.65 "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
@@ -28,7 +28,7 @@ code { background: var(--code); padding: 0.1em 0.35em; border-radius: 4px; font-
 
 .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 16px; }
 section.wrap { padding-top: 28px; padding-bottom: 12px; }
-h1, h2, h3 { font-family: "Source Serif 4", Georgia, serif; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; }
+h1, h2, h3 { font-family: "EB Garamond", Georgia, serif; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; }
 h2 { font-size: 1.85rem; margin: 1.2em 0 0.5em; }
 h3 { font-size: 1.3rem; margin: 1.8em 0 0.4em; }
 
@@ -83,7 +83,7 @@ figcaption { color: var(--muted); font-size: 0.92rem; margin-top: 10px; text-ali
 .seg { display: inline-flex; gap: 0; background: rgba(255,255,255,0.9); border-radius: 999px; border: 1px solid var(--line); overflow: hidden; }
 .seg .chip { border: 0; border-radius: 0; background: transparent; }
 .chip {
-  font: 500 0.84rem Inter, sans-serif; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line);
+  font: 500 0.84rem "Atkinson Hyperlegible", sans-serif; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line);
   background: rgba(255,255,255,0.9); color: var(--ink); cursor: pointer;
 }
 .chip:hover { background: #fff; }
@@ -91,16 +91,16 @@ figcaption { color: var(--muted); font-size: 0.92rem; margin-top: 10px; text-ali
 .chip:disabled { opacity: 0.4; cursor: default; }
 
 .lane-label {
-  display: flex; flex-direction: column; align-items: center; gap: 2px; font: 600 1.15rem Inter, sans-serif; color: var(--lane);
+  display: flex; flex-direction: column; align-items: center; gap: 2px; font: 600 1.15rem "Atkinson Hyperlegible", sans-serif; color: var(--lane);
   background: rgba(255,255,255,0.92); border: 2px solid var(--lane); border-radius: 12px; padding: 2px 10px; min-width: 38px;
 }
 .lane-label span { font-size: 0.72rem; color: #fff; background: var(--lane); border-radius: 6px; padding: 0 6px; line-height: 1.5; }
 
-.you-label { font: 600 0.72rem Inter, sans-serif; color: #fff; background: #6b7d96; border-radius: 999px; padding: 1px 8px; opacity: 0.9; }
+.you-label { font: 600 0.72rem "Atkinson Hyperlegible", sans-serif; color: #fff; background: #6b7d96; border-radius: 999px; padding: 1px 8px; opacity: 0.9; }
 
 .demo-panel {
   padding: 20px; border-top: 1px solid var(--line);
-  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; align-items: start;
+  display: grid; grid-template-columns: minmax(0, 2fr) minmax(220px, 1fr); gap: 32px; align-items: start;
 }
 .rank-col, .settings { display: flex; flex-direction: column; gap: 10px; }
 .settings { border-left: 1px solid var(--line); padding-left: 32px; }
@@ -109,7 +109,7 @@ figcaption { color: var(--muted); font-size: 0.92rem; margin-top: 10px; text-ali
 .panel-head h3 { margin: 0; font-size: 1.35rem; }
 .algo-seg { display: grid; grid-template-columns: repeat(3, 1fr); padding: 4px; gap: 4px; background: var(--band); border: 1px solid var(--line); border-radius: 12px; }
 .algo-seg button {
-  font: 600 0.88rem Inter, sans-serif; padding: 8px 6px; border: 0; border-radius: 9px; background: transparent; color: var(--muted); cursor: pointer;
+  font: 600 0.88rem "Atkinson Hyperlegible", sans-serif; padding: 8px 6px; border: 0; border-radius: 9px; background: transparent; color: var(--muted); cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
 }
 .algo-seg button:hover:not(.active):not(:disabled) { background: #fff; color: var(--ink); }
@@ -133,7 +133,7 @@ figcaption { color: var(--muted); font-size: 0.92rem; margin-top: 10px; text-ali
 
 .row { display: flex; gap: 8px; }
 button.primary, button.secondary, button.ghost {
-  font: 600 0.92rem Inter, sans-serif; padding: 10px 14px; border-radius: 10px; cursor: pointer; border: 1px solid transparent;
+  font: 600 0.92rem "Atkinson Hyperlegible", sans-serif; padding: 10px 14px; border-radius: 10px; cursor: pointer; border: 1px solid transparent;
 }
 button.primary { flex: 1; background: var(--accent); color: var(--accent-ink); }
 button.primary:hover:not(:disabled) { background: #d0681a; }
@@ -177,7 +177,7 @@ tr.hl td { font-weight: 600; color: var(--accent); }
 
 .bib { position: relative; }
 .bib pre { background: var(--code); border-radius: 12px; padding: 16px 18px; overflow-x: auto; font-size: 0.82rem; line-height: 1.55; margin: 0; }
-.copy { position: absolute; top: 10px; right: 10px; font: 500 0.8rem Inter, sans-serif; padding: 4px 10px; border-radius: 8px; border: 1px solid var(--line); background: #fff; cursor: pointer; }
+.copy { position: absolute; top: 10px; right: 10px; font: 500 0.8rem "Atkinson Hyperlegible", sans-serif; padding: 4px 10px; border-radius: 8px; border: 1px solid var(--line); background: #fff; cursor: pointer; }
 
 footer { color: var(--muted); font-size: 0.85rem; padding: 30px 16px 50px; border-top: 1px solid var(--line); margin-top: 40px; }
 
