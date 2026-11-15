@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Preference Study</title>
+  <style>
+    #loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    #loading-overlay::after {
+      content: "Loading...";
+      color: white;
+      font-size: 2em;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #f0f0f0;
+    }
+
+    #main-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: 1200px;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    #video-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: 800px;
+      margin-bottom: 20px;
+    }
+
+    #video-text {
+      text-align: center;
+      font-size: 1.2em;
+      margin-bottom: 20px;
+      padding: 0 10px;
+    }
+
+    #video-panel {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: 500px;
+      height: auto;
+      background-color: #f5f5f5;
+      border: 2px solid #333;
+      box-sizing: border-box;
+      margin-bottom: 20px;
+    }
+
+    #video-panel video {
+      width: 100%;
+      height: auto;
+    }
+
+    #kuri-panel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 200px;
+      background-color: #f5f5f5;
+      border: 2px solid #333;
+      box-sizing: border-box;
+      margin-bottom: 20px;
+    }
+
+    .image-container {
+      width: 100%;
+      padding: 10px;
+    }
+
+    .image-container img {
+      width: 100%;
+      height: auto;
+    }
+
+    .caption {
+      text-align: center;
+      padding: 10px;
+    }
+
+    #option-display {
+      width: 100%;
+      max-width: 1200px;
+      height: auto;
+      border: 2px solid #333;
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .option-box {
+      width: 130px;
+      height: 130px;
+      border: 2px dashed #999;
+      margin: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .option-box:hover {
+      background-color: #f0f0f0;
+    }
+
+    .option-label {
+      position: absolute;
+      bottom: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    #tiles-container {
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      width: 100%;
+      max-width: 1200px;
+      height: 180px;
+      border: 2px solid #333;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    #best-container {
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      width: auto;
+      max-width: 1200px;
+      height: 180px;
+      border: 2px solid #333;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .tile {
+      width: 13vh;
+      height: 13vh;
+      background-color: #ccc;
+      border: 2px solid #666;
+      margin: 0px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .tile img {
+      width: 90%;
+      height: 90%;
+      object-fit: cover;
+    }
+
+    #button-container {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      max-width: 1200px;
+    }
+
+    #reset-button,
+    #submit-button,
+    #viewbest-button {
+      padding: 10px 20px;
+      font-size: 16px;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 5px;
+    }
+
+    #reset-button {
+      background-color: #646564;
+    }
+
+    #reset-button:hover {
+      background-color: #707470;
+    }
+
+    #submit-button {
+      background-color: #0a6c0a;
+    }
+
+    #submit-button:hover {
+      background-color: #139e13;
+    }
+
+    #viewbest-button {
+      background-color: #128076;
+    }
+
+    #viewbest-button:hover {
+      background-color: #0b4d47;
+    }
+
+    .copied-tile {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      opacity: 0.7;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="loading-overlay"></div>
+  <div id="main-container">
+
+    <div id="video-container">
+      <div id="video-text">
+      </div>
+    </div>
+
+    <!-- Added new option box labeled "Best Option Seen" -->
+    <div id="best-container">
+    <div class="option-box" id="best-seen" droppable="true">
+      <div class="option-label">Favorite</div>
+    </div>
+  </div>
+
+    <div id="option-display">
+      <div class="option-box" id="worst" droppable="true">
+        <div class="option-label">Worst</div>
+      </div>
+      <div class="option-box" id="middle1" droppable="true"></div>
+      <div class="option-box" id="best" droppable="true">
+        <div class="option-label">Best</div>
+      </div>
+    </div>
+
+    <div id="tiles-container">
+      <div class="tile" id="tile1" draggable="true"></div>
+      <div class="tile" id="tile2" draggable="true"></div>
+      <div class="tile" id="tile3" draggable="true"></div>
+    </div>
+
+    <div id="button-container">
+      <button id="submit-button">Submit</button>
+      <button id="reset-button">Reset</button>
+      <button id="viewbest-button">View Predicted Best</button>
+    </div>
+
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"></script>
+
+  <script>
+    var socket = io.connect('http://localhost:8001');
+    socket.on('connect', function () {
+      console.log('Connected to server');
+      sendMessage('');
+    });
+    socket.on('query', function (data) {
+      console.log('Received message:', data);
+      closeLoadingOverlay();
+      updateOptions(data);
+    });
+
+    function updateOptions(options) {
+        const tiles = document.querySelectorAll('.tile');
+        let tileIndex = 0;
+        tiles.forEach((tile) => {
+          // Skip updating the tile in the "Favorite" box
+          if (tile.closest('#best-seen')) {
+            return;
+          }
+          const key = `index${tileIndex}`;
+          if (options[key]) {
+            const image = options[key];
+            tile.innerHTML = `${image}`;
+            tile.dataset.index = tileIndex;
+          } else {
+            tile.innerHTML = '';
+            delete tile.dataset.index;
+          }
+          tileIndex++;
+        });
+      }
+
+
+      function getRanking() {
+        // Collect all option boxes excluding the favorite box
+        const optionBoxes = document.querySelectorAll('.option-box:not(#best-seen)');
+        const ranking = Array.from(optionBoxes).map(box => {
+          const tile = box.querySelector('.tile');
+          return tile ? tile.innerHTML : ''; // Return tile content if it exists
+        });
+        return ranking;
+      }
+
+    function sendMessage(ranking) {
+      message = {
+        'type': 'ranking',
+        'data': ranking
+      }
+      socket.emit('communication', message);
+    }
+
+    function clickButton() {
+      message = {
+        'type': 'play',
+        'data': this.innerHTML
+      }
+      socket.emit('communication', message);
+    }
+
+    const optionBoxes = document.querySelectorAll('.option-box');
+    const tiles = document.querySelectorAll('.tile');
+
+    const originalTiles = Array.from(tiles).map(tile => ({
+      tile,
+      parent: tile.parentNode,
+      nextSibling: tile.nextSibling
+    }));
+
+    tiles.forEach(tile => {
+      tile.addEventListener('dragstart', dragStart);
+      tile.addEventListener('dragend', dragEnd);
+      tile.addEventListener('click', clickButton);
+    });
+
+    function dragStart() {
+      this.classList.add('dragging');
+    }
+
+    function dragEnd() {
+      this.classList.remove('dragging');
+    }
+
+    optionBoxes.forEach(box => {
+      box.addEventListener('dragover', dragOver);
+      box.addEventListener('dragenter', dragEnter);
+      box.addEventListener('dragleave', dragLeave);
+      box.addEventListener('drop', dragDropOptionDisplay);
+    });
+
+    function dragOver(e) {
+      e.preventDefault();
+    }
+
+    function dragEnter(e) {
+      e.preventDefault();
+      this.classList.add('hovered');
+    }
+
+    function dragLeave() {
+      this.classList.remove('hovered');
+    }
+
+    const resetButton = document.getElementById('reset-button');
+    resetButton.addEventListener('click', resetTiles);
+
+
+
+
+
+
+
+    function dragDropOptionDisplay() {
+      const draggedTile = document.querySelector('.tile.dragging');
+      const targetBox = this;
+      const sourceBox = draggedTile.parentNode;
+
+      if (targetBox.id === 'best-seen') {
+        const copiedTile = draggedTile.cloneNode(true);
+        copiedTile.classList.remove('dragging', 'copied-tile'); // Remove dragging and copied-tile classes from the copied tile
+        copiedTile.style.opacity = '1'; // Ensure the copied tile is fully opaque
+        copiedTile.addEventListener('click', clickButton); // Add the click event listener to the copied tile
+        targetBox.innerHTML = '<div class="option-label">Favorite</div>';
+        targetBox.appendChild(copiedTile);
+
+
+        message = {
+          'type': 'set_favorite',
+          'data': copiedTile.innerHTML
+        }
+        socket.emit('communication', message);
+
+      } else if (!targetBox.querySelector('.tile')) {
+        targetBox.appendChild(draggedTile);
+      } else {
+        const targetTile = targetBox.querySelector('.tile');
+        targetBox.removeChild(targetTile);
+        sourceBox.appendChild(targetTile);
+        targetBox.appendChild(draggedTile);
+      }
+
+      targetBox.classList.remove('hovered');
+    }
+
+function resetTiles() {
+  originalTiles.forEach(data => {
+    const { tile, parent, nextSibling } = data;
+    parent.insertBefore(tile, nextSibling);
+  });
+  const bestSeenBox = document.getElementById('best-seen');
+  const copiedTile = bestSeenBox.querySelector('.tile');
+  if (copiedTile) {
+    copiedTile.style.opacity = '1'; // Ensure the copied tile is fully opaque
+    copiedTile.classList.remove('dragging', 'copied-tile'); // Remove dragging and copied-tile classes from the copied tile
+    copiedTile.addEventListener('click', clickButton); // Add the click event listener to the copied tile
+  }
+}
+
+
+
+
+
+    const viewbestButton = document.getElementById('viewbest-button');
+    viewbestButton.addEventListener('click', playBestOption);
+
+    function playBestOption() {
+      message = {
+        'type': 'play',
+        'data': 'best'
+      }
+      socket.emit('communication', message);
+    }
+
+    const submitButton = document.getElementById('submit-button');
+    submitButton.addEventListener('click', submitRanking);
+    function submitRanking() {
+      ranking = getRanking();
+      if (ranking.length < document.querySelectorAll('.option-box').length - 1) {
+        alert("Please rank all options");
+        return;
+      }
+      showLoadingOverlay();
+      resetTiles();
+      sendMessage(ranking);
+    }
+
+    function showLoadingOverlay() {
+      const overlay = document.getElementById('loading-overlay');
+      overlay.style.display = 'flex';
+    }
+
+    function closeLoadingOverlay() {
+      const overlay = document.getElementById('loading-overlay');
+      overlay.style.display = 'none';
+    }
+  </script>
+
+</body>
+
+</html>

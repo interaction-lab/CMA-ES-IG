@@ -1,0 +1,27 @@
+\begin{table}[t]
+\centering
+\caption{Non-inferiority of CMA-ES-IG in the simulated robot domains (RQ2). Difference in mean AUC (CMA-ES-IG minus baseline) with Welch 95\% confidence intervals over 100 simulated users. CMA-ES-IG is non-inferior ($\checkmark$) when the interval excludes a loss larger than $\Delta=0.05$ for alignment and $\Delta=0.05$ for normalized regret.}
+\label{tab:noninferiority_rq2}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{ll cc}
+\toprule
+\textbf{Baseline} & & \textbf{Alignment ($\uparrow$)} & \textbf{Norm.\ regret ($\downarrow$)} \\
+\midrule
+Infogain & Lunar Lander & $-0.016$ [$-0.021$, $-0.011$] $\checkmark$ & $+0.009$ [$+0.003$, $+0.015$] $\checkmark$ \\
+ & Driving & $-0.012$ [$-0.016$, $-0.008$] $\checkmark$ & $+0.006$ [$+0.002$, $+0.011$] $\checkmark$ \\
+ & Robot Face Design & $-0.011$ [$-0.014$, $-0.009$] $\checkmark$ & $+0.004$ [$+0.000$, $+0.008$] $\checkmark$ \\
+ & Robot Voice Design & $-0.017$ [$-0.024$, $-0.010$] $\checkmark$ & $+0.006$ [$+0.002$, $+0.010$] $\checkmark$ \\
+\midrule
+Informative+Revealing & Lunar Lander & $-0.007$ [$-0.013$, $-0.002$] $\checkmark$ & $+0.003$ [$-0.003$, $+0.010$] $\checkmark$ \\
+ & Driving & $-0.003$ [$-0.007$, $+0.001$] $\checkmark$ & $+0.002$ [$-0.003$, $+0.007$] $\checkmark$ \\
+ & Robot Face Design & $-0.000$ [$-0.004$, $+0.003$] $\checkmark$ & $-0.001$ [$-0.006$, $+0.004$] $\checkmark$ \\
+ & Robot Voice Design & $-0.004$ [$-0.012$, $+0.003$] $\checkmark$ & $-0.000$ [$-0.004$, $+0.004$] $\checkmark$ \\
+\midrule
+CMA-ES & Lunar Lander & $-0.003$ [$-0.009$, $+0.003$] $\checkmark$ & $+0.003$ [$-0.003$, $+0.010$] $\checkmark$ \\
+ & Driving & $-0.001$ [$-0.005$, $+0.004$] $\checkmark$ & $+0.002$ [$-0.003$, $+0.007$] $\checkmark$ \\
+ & Robot Face Design & $+0.009$ [$+0.004$, $+0.014$] $\checkmark$ & $-0.007$ [$-0.015$, $-0.000$] $\checkmark$ \\
+ & Robot Voice Design & $-0.005$ [$-0.012$, $+0.002$] $\checkmark$ & $+0.000$ [$-0.004$, $+0.004$] $\checkmark$ \\
+\bottomrule
+\end{tabular}
+}
+\end{table}

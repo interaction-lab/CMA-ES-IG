@@ -1,0 +1,19 @@
+\begin{table*}[t]
+\centering
+\caption{Marginal means for accuracy metrics in the parameter estimation task, with the informative+revealing baseline of Habibian et al. added. Mean ($\pm$ standard error) of the AUC of alignment and regret over 100 simulated users. Bolded values denote the highest-performing method.}
+\label{tab:quantitative_results}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{l cccc cccc}
+\toprule
+\multirow{2}{*}{\textbf{Algorithm}} & \multicolumn{4}{c}{\textbf{AUC Alignment ($\uparrow$)}} & \multicolumn{4}{c}{\textbf{AUC Regret ($\downarrow$)}} \\
+\cmidrule(lr){2-5} \cmidrule(lr){6-9}
+& $d=4$ & $d=8$ & $d=16$ & $d=32$ & $d=4$ & $d=8$ & $d=16$ & $d=32$ \\
+\midrule
+Infogain & $0.951 \pm {\scriptstyle 0.002}$ & $0.860 \pm {\scriptstyle 0.003}$ & $0.644 \pm {\scriptstyle 0.007}$ & $0.383 \pm {\scriptstyle 0.012}$ & $0.102 \pm {\scriptstyle 0.009}$ & $0.673 \pm {\scriptstyle 0.040}$ & $2.908 \pm {\scriptstyle 0.126}$ & $7.178 \pm {\scriptstyle 0.304}$ \\
+Informative+Revealing & $\bm{0.962} \pm {\scriptstyle 0.001}$ & $0.898 \pm {\scriptstyle 0.003}$ & $0.704 \pm {\scriptstyle 0.005}$ & $0.457 \pm {\scriptstyle 0.006}$ & $\bm{0.075} \pm {\scriptstyle 0.007}$ & $\bm{0.458} \pm {\scriptstyle 0.034}$ & $2.313 \pm {\scriptstyle 0.097}$ & $6.182 \pm {\scriptstyle 0.180}$ \\
+CMA-ES & $0.955 \pm {\scriptstyle 0.001}$ & $0.889 \pm {\scriptstyle 0.003}$ & $0.683 \pm {\scriptstyle 0.007}$ & $0.453 \pm {\scriptstyle 0.007}$ & $0.102 \pm {\scriptstyle 0.013}$ & $0.543 \pm {\scriptstyle 0.044}$ & $2.506 \pm {\scriptstyle 0.119}$ & $5.902 \pm {\scriptstyle 0.173}$ \\
+CMA-ES-IG & $0.958 \pm {\scriptstyle 0.002}$ & $\bm{0.901} \pm {\scriptstyle 0.003}$ & $\bm{0.728} \pm {\scriptstyle 0.005}$ & $\bm{0.497} \pm {\scriptstyle 0.007}$ & $0.093 \pm {\scriptstyle 0.011}$ & $0.482 \pm {\scriptstyle 0.041}$ & $\bm{1.996} \pm {\scriptstyle 0.097}$ & $\bm{5.628} \pm {\scriptstyle 0.152}$ \\
+\bottomrule
+\end{tabular}
+}
+\end{table*}

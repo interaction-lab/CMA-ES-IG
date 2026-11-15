@@ -1,0 +1,12 @@
+timestamp,pid,task,method,sequence,trajectory1index,trajectory1rank,trajectory2index,trajectory2rank,trajectory3index,trajectory3rank
+1722021680.7761853,1,handover,CMA-ES,0,612,0,145,1,979,2
+1722021849.7894323,1,handover,CMA-ES,1,911,0,558,1,886,2
+1722022063.99815,1,handover,CMA-ES,2,156,0,979,1,527,2
+1722022153.7463644,1,handover,CMA-ES,3,236,0,889,1,959,2
+1722022398.8828163,1,handover,CMA-ES-IG,0,287,0,243,1,191,2
+1722022513.2992613,1,handover,CMA-ES-IG,1,722,0,357,1,49,2
+1722022620.1031117,1,handover,CMA-ES-IG,2,316,0,585,1,465,2
+1722022723.836447,1,handover,CMA-ES-IG,3,670,0,688,1,317,2
+1722023113.2498088,1,handover,infogain,0,627,0,178,1,567,2
+1722023222.5301995,1,handover,infogain,1,717,0,156,1,712,2
+1722023315.9368696,1,handover,infogain,2,789,0,612,1,428,2

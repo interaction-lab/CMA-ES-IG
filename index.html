@@ -1,0 +1,167 @@
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: 	#c1c1e0;
+        }
+        tr:nth-child(even) {
+            background-color: 	#E6E6FA;
+        }
+        tr:nth-child(odd) {
+            background-color: 	#d7d7f1;
+        }
+        tr:hover {
+            background-color: 	#c1c1e0;
+        }
+        th:nth-child(3), td:nth-child(3) {
+            width: 8%;
+        }
+        th:nth-child(4), td:nth-child(4) {
+            width: 8%;
+        }
+        th:nth-child(5), td:nth-child(5) {
+            width: 50%;
+        }
+        #search-bar {
+            width: 50%;
+            padding: 10px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 16px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        a {
+            text-decoration: none; /* Remove underline from links */
+            color: rgb(84, 84, 181); /* Optional: Change link color */
+        }
+        a:hover {
+            color: orange; /* Optional: Add underline on hover */
+        }
+    </style>
+</head>
+<body>
+
+<input type="text" id="search-bar" placeholder="Search for keywords to filter table...">
+
+<script>
+async function fetchData() {
+    try {
+        const target = "https://docs.google.com/spreadsheets/d/129vOEL6M-v7yalRqgUvlhDN6bLNCqg_NN6PHbh4HqlA/gviz/tq?tqx=out:csv&sheet=Sheet1";
+
+        const res = await fetch(target, {
+            method: 'get',
+            headers: {
+                'content-type': 'text/csv;charset=UTF-8',
+            }
+        });
+
+        if (res.status === 200) {
+            const csvText = await res.text();
+            const data = parseCSV(csvText);
+            displayData(data);
+            addSearchFunctionality();
+        } else {
+            console.log(`Error code ${res.status}`);
+        }
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+function parseCSV(csvText) {
+    const lines = csvText.trim().split('\n');
+    const headers = lines[0].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(header => header.replace(/(^"|"$)/g, ''));
+    const rows = lines.slice(1).map(line => {
+        const values = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(value => value.replace(/(^"|"$)/g, ''));
+        let rowObj = {};
+        headers.forEach((header, index) => {
+            rowObj[header] = values[index];
+        });
+        return rowObj;
+    });
+    return rows;
+}
+
+function displayData(data) {
+    const table = document.createElement('table');
+    table.id = 'data-table';
+
+    // Create table headers
+    const headerRow = document.createElement('tr');
+    for (let key in data[0]) {
+        if (key.trim() === '') continue;
+        const headerCell = document.createElement('th');
+        headerCell.textContent = key;
+        headerRow.appendChild(headerCell);
+    }
+    table.appendChild(headerRow);
+
+    // Create table rows
+    data.forEach(row => {
+        const rowElement = document.createElement('tr');
+        for (let key in row) {
+            if (key.trim() === '') continue;
+            const cell = document.createElement('td');
+            // if the key is 'website', create a link to the webpage
+            if (key.trim().toLowerCase() == 'website' && row[key]) {
+                const link = document.createElement('a');
+                link.href = row[key];
+                link.textContent = "Link";
+                link.target = '_blank';
+                console.log(link)
+                cell.appendChild(link);
+            } else {
+                cell.textContent = row[key];
+            }
+            rowElement.appendChild(cell);
+        }
+        table.appendChild(rowElement);
+    });
+
+    document.body.appendChild(table);
+}
+
+function addSearchFunctionality() {
+    const searchBar = document.getElementById('search-bar');
+    searchBar.addEventListener('keyup', function() {
+        const filter = searchBar.value.toLowerCase();
+        const table = document.getElementById('data-table');
+        const tr = table.getElementsByTagName('tr');
+        
+        for (let i = 1; i < tr.length; i++) {
+            tr[i].style.display = 'none';
+            const td = tr[i].getElementsByTagName('td');
+            for (let j = 0; j < td.length; j++) {
+                if (td[j]) {
+                    if (td[j].textContent.toLowerCase().includes(filter)) {
+                        tr[i].style.display = '';
+                        break;
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Call the async function
+fetchData();
+</script>
+</body>
+</html>

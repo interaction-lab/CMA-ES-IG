@@ -1,0 +1,20 @@
+\begin{table}[t]
+\centering
+\caption{User study results ($n=14$ participants, each score averaged over the physical and social tasks). Mean (SD) of ease of use (EOU), behavioral adaptation (BA), and preference rank (0 = least, 2 = most preferred). Bottom: Wilcoxon signed-rank tests of CMA-ES-IG against each baseline, with paired Hedges\textquotesingle{} $g$ and FDR-corrected (Benjamini--Hochberg) $p$ over the two comparisons within each scale.}
+\label{tab:RQ3_results}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{l ccc}
+\toprule
+\textbf{Algorithm} & \textbf{EOU} & \textbf{BA} & \textbf{Rank} \\
+\midrule
+Infogain & 5.20 (1.06) & 4.57 (1.93) & 0.64 (0.53) \\
+CMA-ES & 4.91 (1.63) & 4.75 (1.66) & 0.86 (0.57) \\
+CMA-ES-IG & 5.57 (1.22) & 5.28 (1.69) & 1.50 (0.39) \\
+\midrule
+\multicolumn{4}{l}{\textit{CMA-ES-IG vs.}} \\
+\quad Infogain & $W=30$, $p=0.285$ ($p_{BH}=0.285$), $g=0.29$ & $W=15.5$, $p=0.035$ ($p_{BH}=0.070$), $g=0.57$ & $W=0$, $p=0.002$ ($p_{BH}=0.005$), $g=1.08$ \\
+\quad CMA-ES & $W=5$, $p=0.008$ ($p_{BH}=0.016$), $g=0.82$ & $W=29$, $p=0.139$ ($p_{BH}=0.139$), $g=0.44$ & $W=4$, $p=0.023$ ($p_{BH}=0.023$), $g=0.74$ \\
+\bottomrule
+\end{tabular}
+}
+\end{table}

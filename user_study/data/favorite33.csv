@@ -1,0 +1,4 @@
+timestamp,pid,task,method,sequence,favorite_id
+1722373942.9389148,33,blossom,CMA-ES,1,1188
+1722374275.5922632,33,blossom,CMA-ES-IG,1,682
+1722374868.5838962,33,blossom,infogain,4,1398

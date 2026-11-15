@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MNIST Preference Explorer</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --panel: #ffffff; --ink: #1d2330; --muted: #6b7280; --line: #e3e6eb;
+    --accent: #f49249; --blue: #0770bb; --good: #1f6fb2; --chip: #eef1f5;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font: 15px/1.45 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  header { padding: 18px 24px 8px; }
+  h1 { margin: 0; font-size: 20px; }
+  .sub { color: var(--muted); margin-top: 2px; }
+  .controls { display: flex; flex-wrap: wrap; gap: 14px; align-items: end; padding: 10px 24px 14px;
+              border-bottom: 1px solid var(--line); }
+  label { display: flex; flex-direction: column; font-size: 12px; color: var(--muted); gap: 4px; }
+  select, input { font: inherit; padding: 6px 8px; border: 1px solid var(--line); border-radius: 8px;
+                  background: var(--panel); color: var(--ink); }
+  button { font: inherit; padding: 8px 16px; border-radius: 8px; border: 1px solid var(--line);
+           background: var(--panel); cursor: pointer; }
+  button.primary { background: var(--ink); color: white; border-color: var(--ink); }
+  button:disabled { opacity: .45; cursor: default; }
+  main { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 18px; padding: 18px 24px; }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; }
+  .panel h2 { margin: 0 0 10px; font-size: 14px; letter-spacing: .02em; text-transform: uppercase; color: var(--muted); }
+  .query { display: flex; gap: 16px; flex-wrap: wrap; }
+  .card { position: relative; border: 2px solid var(--line); border-radius: 12px; padding: 6px; cursor: pointer;
+          background: #fff; transition: border-color .12s, transform .12s; }
+  .card:hover { border-color: #b9c0cb; transform: translateY(-1px); }
+  .card.ranked { border-color: var(--accent); }
+  .card img { display: block; width: 140px; height: 140px; border-radius: 6px; image-rendering: auto; }
+  .badge { position: absolute; top: -10px; left: -10px; width: 28px; height: 28px; border-radius: 50%;
+           background: var(--accent); color: #fff; font-weight: 700; display: grid; place-items: center;
+           font-size: 14px; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+  .row { display: flex; gap: 10px; align-items: center; margin-top: 14px; flex-wrap: wrap; }
+  .hint { color: var(--muted); font-size: 13px; }
+  .stat { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px dashed var(--line); font-size: 14px; }
+  .stat:last-child { border-bottom: 0; }
+  .stat b { font-variant-numeric: tabular-nums; }
+  .digits { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; margin-bottom: 10px; }
+  .digits img { width: 100%; border-radius: 4px; border: 1px solid var(--line); }
+  .bars { display: grid; grid-template-columns: repeat(10, 1fr); gap: 3px; align-items: end; height: 70px; margin-top: 4px; }
+  .bar { background: var(--blue); border-radius: 3px 3px 0 0; min-height: 1px; }
+  .barlabels { display: grid; grid-template-columns: repeat(10, 1fr); gap: 3px; font-size: 11px; color: var(--muted); text-align: center; }
+  svg.spark { width: 100%; height: 64px; display: block; }
+  .history { display: flex; flex-direction: column; gap: 8px; margin-top: 18px; }
+  .hrow { display: flex; align-items: center; gap: 6px; }
+  .hrow img { width: 46px; height: 46px; border-radius: 4px; border: 1px solid var(--line); }
+  .hrow .n { width: 30px; color: var(--muted); font-size: 12px; text-align: right; }
+  .hrow .b { color: var(--muted); font-size: 12px; margin-left: 6px; }
+  .tag { display: inline-block; background: var(--chip); border-radius: 999px; padding: 2px 10px; font-size: 12px; color: var(--muted); }
+  .error { color: #b8322a; }
+  @media (max-width: 860px) { main { grid-template-columns: 1fr; } .card img { width: 110px; height: 110px; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>MNIST Preference Explorer</h1>
+  <div class="sub">Think of a target digit, then rank each query from most to least like it.
+    Open a second tab to run another algorithm side by side.</div>
+</header>
+
+<div class="controls">
+  <label>Algorithm
+    <select id="method">
+      <option value="infogain">Infogain</option>
+      <option value="cmaes">CMA-ES</option>
+      <option value="cmaesig" selected>CMA-ES-IG (k-means, deployed)</option>
+      <option value="cmaesig_exact">CMA-ES-IG (exact information gain)</option>
+    </select>
+  </label>
+  <label>Belief
+    <select id="belief">
+      <option value="resample" selected>Resampling</option>
+      <option value="plain">Plain (as in user study)</option>
+    </select>
+  </label>
+  <label>Latent dimensions
+    <select id="dim"><option>4</option><option selected>8</option><option>16</option></select>
+  </label>
+  <label>Show
+    <select id="snap">
+      <option value="1" selected>Nearest real digit</option>
+      <option value="0">Decoded latent point</option>
+    </select>
+  </label>
+  <label>Items per query
+    <select id="k"><option selected>3</option><option>4</option></select>
+  </label>
+  <label>Rationality β
+    <input id="beta" type="number" value="10" min="1" max="50" step="1" style="width:80px">
+  </label>
+  <button class="primary" id="start">Start new session</button>
+  <span id="status" class="hint"></span>
+</div>
+
+<main>
+  <section>
+    <div class="panel">
+      <h2>Query <span id="qnum"></span> <span id="sessiontag" class="tag"></span></h2>
+      <div id="query" class="query"></div>
+      <div class="row">
+        <button class="primary" id="submit" disabled>Submit ranking</button>
+        <button id="undo" disabled>Undo</button>
+        <span class="hint" id="rankhint">Click the images from most to least like your target.</span>
+      </div>
+    </div>
+    <div class="history" id="history"></div>
+  </section>
+
+  <aside class="panel">
+    <h2>Robot's current estimate</h2>
+    <div class="hint" style="margin-bottom:6px" id="esthint">Real MNIST digits it currently ranks highest</div>
+    <div id="topdigits" class="digits"></div>
+    <div class="hint">Labels of its top 200 digits</div>
+    <div id="bars" class="bars"></div>
+    <div class="barlabels">0 1 2 3 4 5 6 7 8 9</div>
+
+    <h2 style="margin-top:18px">This query</h2>
+    <div class="stat"><span>Information (first choice)</span><b id="bits">–</b></div>
+    <div class="stat"><span>Generation time</span><b id="gen">–</b></div>
+    <div class="stat"><span>Distance to nearest real digits</span><b id="snapd">–</b></div>
+
+    <h2 style="margin-top:18px">Belief</h2>
+    <div class="stat"><span>Effective sample size</span><b id="ess">–</b></div>
+    <div class="stat"><span>Resampling steps</span><b id="res">–</b></div>
+
+    <h2 style="margin-top:18px">Over the session</h2>
+    <div class="hint">Information per query (bits)</div>
+    <svg id="sparkbits" class="spark"></svg>
+    <div class="hint">Effective sample size (log scale)</div>
+    <svg id="sparkess" class="spark"></svg>
+  </aside>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+let sid = null, state = null, order = [];
+
+const barLabels = document.querySelector('.barlabels');
+barLabels.innerHTML = [...Array(10).keys()].map(i => `<span>${i}</span>`).join('');
+
+async function post(url, body) {
+  const r = await fetch(url, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body)});
+  const j = await r.json();
+  if (!r.ok) throw new Error(j.error || r.statusText);
+  return j;
+}
+
+async function start() {
+  setBusy('Starting…');
+  try {
+    state = await post('/api/new', {method: $('method').value, belief: $('belief').value,
+      dim: +$('dim').value, k: +$('k').value, beta: +$('beta').value, snap: $('snap').value === '1'});
+    sid = state.sid; order = []; render();
+    setBusy('');
+  } catch (e) { setBusy(e.message, true); }
+}
+
+async function submit() {
+  const k = state.query.length;
+  const full = order.concat([...Array(k).keys()].filter(i => !order.includes(i)));
+  setBusy('Updating belief and generating the next query…');
+  try { state = await post('/api/rank', {sid, order: full}); order = []; render(); setBusy(''); }
+  catch (e) { setBusy(e.message, true); }
+}
+
+function setBusy(msg, err) {
+  $('status').textContent = msg; $('status').className = err ? 'hint error' : 'hint';
+  $('submit').disabled = !!msg || !state || order.length < state.query.length - 1;
+}
+
+function clickCard(i) {
+  if (order.includes(i)) return;
+  order.push(i);
+  if (order.length === state.query.length - 1)                     // the last one is implied
+    order.push([...Array(state.query.length).keys()].find(j => !order.includes(j)));
+  renderQuery();
+}
+
+function renderQuery() {
+  const q = $('query'); q.innerHTML = '';
+  state.query.forEach((src, i) => {
+    const c = document.createElement('div');
+    c.className = 'card' + (order.includes(i) ? ' ranked' : '');
+    c.innerHTML = `<img src="${src}" alt="query item ${i + 1}">` +
+      (order.includes(i) ? `<div class="badge">${order.indexOf(i) + 1}</div>` : '');
+    c.onclick = () => clickCard(i);
+    q.appendChild(c);
+  });
+  $('submit').disabled = order.length < state.query.length - 1;
+  $('undo').disabled = order.length === 0;
+  $('rankhint').textContent = order.length === 0 ? 'Click the images from most to least like your target.'
+    : order.length >= state.query.length - 1 ? 'Ranking complete. Submit, or undo to change it.'
+    : `Now click your #${order.length + 1}.`;
+}
+
+function spark(svg, values, opts = {}) {
+  const w = svg.clientWidth || 300, h = 64, pad = 6;
+  if (!values.length) { svg.innerHTML = ''; return; }
+  const ys = opts.log ? values.map(v => Math.log10(Math.max(v, 1))) : values;
+  const lo = opts.lo ?? Math.min(...ys), hi = opts.hi ?? Math.max(...ys, lo + 1e-9);
+  const x = i => pad + (values.length === 1 ? (w - 2 * pad) / 2 : i * (w - 2 * pad) / (values.length - 1));
+  const y = v => h - pad - (v - lo) / (hi - lo || 1) * (h - 2 * pad);
+  const pts = ys.map((v, i) => `${x(i)},${y(v)}`).join(' ');
+  svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+  svg.innerHTML = `<line x1="${pad}" x2="${w - pad}" y1="${h - pad}" y2="${h - pad}" stroke="#e3e6eb"/>` +
+    `<polyline points="${pts}" fill="none" stroke="${opts.color || '#f49249'}" stroke-width="2" stroke-linejoin="round"/>` +
+    ys.map((v, i) => `<circle cx="${x(i)}" cy="${y(v)}" r="2.6" fill="${opts.color || '#f49249'}"><title>${values[i].toFixed(opts.log ? 0 : 2)}</title></circle>`).join('');
+}
+
+function render() {
+  const names = {infogain: 'Infogain', cmaes: 'CMA-ES', cmaesig: 'CMA-ES-IG (k-means)', cmaesig_exact: 'CMA-ES-IG (exact IG)'};
+  $('qnum').textContent = state.query_number;
+  $('sessiontag').textContent = `${names[state.method]} · ${state.belief === 'resample' ? 'resampling' : 'plain'} belief · d=${state.dim} · ${state.snap ? 'real digits' : 'decoded points'}`;
+  renderQuery();
+  $('bits').textContent = state.query_bits.toFixed(2) + ' bits';
+  $('snapd').textContent = state.snap ? state.snap_dist.toFixed(2) + ' (latent units)' : 'not snapping';
+  $('gen').textContent = state.gen_ms < 1000 ? state.gen_ms.toFixed(0) + ' ms' : (state.gen_ms / 1000).toFixed(1) + ' s';
+  $('ess').textContent = `${Math.round(state.ess).toLocaleString()} / ${state.n_samples.toLocaleString()}`;
+  $('res').textContent = state.resamples === null ? 'off' : state.resamples;
+  $('topdigits').innerHTML = state.top_digits.map(s => `<img src="${s}" alt="">`).join('');
+  $('esthint').textContent = state.stats.length === 0
+    ? 'No rankings yet: this is the prior mean, so these digits are arbitrary'
+    : 'Real MNIST digits it currently ranks highest';
+  const counts = [...Array(10).keys()].map(i => state.top_labels[i] || 0), mx = Math.max(...counts, 1);
+  $('bars').innerHTML = counts.map(c => `<div class="bar" style="height:${100 * c / mx}%" title="${c} of 200"></div>`).join('');
+  spark($('sparkbits'), state.stats.map(s => s.bits), {lo: 0, color: '#f49249'});
+  spark($('sparkess'), state.stats.map(s => s.ess), {log: true, lo: 0, hi: Math.log10(state.n_samples), color: '#0770bb'});
+  $('history').innerHTML = state.history.map((h, j) =>
+    `<div class="hrow"><span class="n">#${state.query_number - 1 - j}</span>` +
+    h.images.map((s, r) => `<img src="${s}" title="rank ${r + 1}">`).join('') +
+    `<span class="b">${h.bits.toFixed(2)} bits</span></div>`).join('');
+}
+
+$('start').onclick = start;
+$('submit').onclick = submit;
+$('undo').onclick = () => { order.pop(); if (order.length === state.query.length - 1) order.pop(); renderQuery(); };
+start();
+</script>
+</body>
+</html>

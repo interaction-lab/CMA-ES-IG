@@ -1,0 +1,22 @@
+\begin{table*}[t]
+\centering
+\caption{Ablation over how CMA-ES-IG approximates information gain when selecting which sampled candidates to show. All variants share identical CMA-ES machinery and differ only in the selection rule. Exhaustive search over the deployed pool of 100 samples is intractable ($\binom{100}{4} = 3{,}921{,}225$ subsets per query), so the exact variant uses a pool of 20; $k$-means is reported at both pool sizes as a control. 100 simulated users.}
+\label{tab:ig_ablation}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{l cccc cccc}
+\toprule
+\multirow{2}{*}{\textbf{IG approximation}} & \multicolumn{4}{c}{\textbf{AUC Quality ($\uparrow$)}} & \multicolumn{4}{c}{\textbf{AUC Normalized Regret ($\downarrow$)}} \\
+\cmidrule(lr){2-5} \cmidrule(lr){6-9}
+& $d=4$ & $d=8$ & $d=16$ & $d=32$ & $d=4$ & $d=8$ & $d=16$ & $d=32$ \\
+\midrule
+$k$-means, pool 100 (deployed) & $\bm{0.830} \pm {\scriptstyle 0.006}$ & $\bm{0.775} \pm {\scriptstyle 0.005}$ & $\bm{0.647} \pm {\scriptstyle 0.005}$ & $\bm{0.471} \pm {\scriptstyle 0.004}$ & $0.011 \pm {\scriptstyle 0.001}$ & $0.026 \pm {\scriptstyle 0.002}$ & $0.058 \pm {\scriptstyle 0.003}$ & $0.114 \pm {\scriptstyle 0.004}$ \\
+$k$-means, pool 20 & $0.816 \pm {\scriptstyle 0.006}$ & $0.736 \pm {\scriptstyle 0.005}$ & $0.593 \pm {\scriptstyle 0.006}$ & $0.403 \pm {\scriptstyle 0.005}$ & $0.010 \pm {\scriptstyle 0.001}$ & $0.025 \pm {\scriptstyle 0.002}$ & $0.056 \pm {\scriptstyle 0.002}$ & $0.115 \pm {\scriptstyle 0.004}$ \\
+$k$-medoids, pool 20 & $0.813 \pm {\scriptstyle 0.006}$ & $0.731 \pm {\scriptstyle 0.006}$ & $0.592 \pm {\scriptstyle 0.006}$ & $0.395 \pm {\scriptstyle 0.004}$ & $0.008 \pm {\scriptstyle 0.001}$ & $0.023 \pm {\scriptstyle 0.002}$ & $0.055 \pm {\scriptstyle 0.002}$ & $0.112 \pm {\scriptstyle 0.004}$ \\
+exact (exhaustive), pool 20 & $0.215 \pm {\scriptstyle 0.023}$ & $0.220 \pm {\scriptstyle 0.017}$ & $0.223 \pm {\scriptstyle 0.009}$ & $0.200 \pm {\scriptstyle 0.006}$ & $\bm{0.006} \pm {\scriptstyle 0.001}$ & $\bm{0.016} \pm {\scriptstyle 0.001}$ & $\bm{0.040} \pm {\scriptstyle 0.002}$ & $\bm{0.090} \pm {\scriptstyle 0.003}$ \\
+ellipsoid 90\%, fin. diff. & $0.239 \pm {\scriptstyle 0.011}$ & $0.336 \pm {\scriptstyle 0.009}$ & $0.349 \pm {\scriptstyle 0.007}$ & $0.292 \pm {\scriptstyle 0.004}$ & $0.007 \pm {\scriptstyle 0.001}$ & $0.019 \pm {\scriptstyle 0.001}$ & $0.043 \pm {\scriptstyle 0.002}$ & $0.109 \pm {\scriptstyle 0.004}$ \\
+ellipsoid 90\%, analytic grad. & $0.287 \pm {\scriptstyle 0.012}$ & $0.348 \pm {\scriptstyle 0.009}$ & $0.336 \pm {\scriptstyle 0.008}$ & $0.261 \pm {\scriptstyle 0.004}$ & $0.007 \pm {\scriptstyle 0.001}$ & $0.019 \pm {\scriptstyle 0.001}$ & $0.046 \pm {\scriptstyle 0.002}$ & $0.104 \pm {\scriptstyle 0.003}$ \\
+ellipsoid 90\%, grad. + subsample & $0.432 \pm {\scriptstyle 0.010}$ & $0.486 \pm {\scriptstyle 0.006}$ & $0.456 \pm {\scriptstyle 0.006}$ & $0.361 \pm {\scriptstyle 0.004}$ & $0.008 \pm {\scriptstyle 0.001}$ & $0.018 \pm {\scriptstyle 0.001}$ & $0.044 \pm {\scriptstyle 0.002}$ & $0.107 \pm {\scriptstyle 0.004}$ \\
+\bottomrule
+\end{tabular}
+}
+\end{table*}
