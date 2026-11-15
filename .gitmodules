@@ -7,3 +7,6 @@
 [submodule "user_study/preference-learning-from-selection"]
 	path = user_study/preference-learning-from-selection
 	url = https://github.com/ndennler/preference-learning-from-selection.git
+[submodule "applications/blossom_movement/blossom-public"]
+	path = applications/blossom_movement/blossom-public
+	url = https://github.com/hrc2/blossom-public.git
