@@ -1,4 +1,6 @@
-# CMA-ES-IG for Efficient Preference-Based Exploration of Learned Representation Spaces
+# CMA-ES-IG — ISRR 2024 code
+
+> This folder contains the original code release for the ISRR 2024 paper. For the extended journal version, the project website, and the full set of experiments, see the [top-level README](../README.md).
 
 [![Python Version](https://img.shields.io/badge/python-3.10-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -11,21 +13,21 @@ This work introduces **CMA-ES-IG**, a novel query-generation algorithm designed 
 
 ## Contents
 
-We provide the code for CMA-ES-IG in the file `cmaesig_query_generation.py`. We also provide the web interface we used
+We provide the code for CMA-ES-IG in the file `cmaesig_query_generator.py`. We also provide the web interface we used
 in our experiments to be a resource for other researchers. You will have to supply the code to play a
 particular behavior ID on your physical robot though :). We have provided dummy interfaces for you!
 
 
-* [`cmaesig_query_generation.py`](cmaesig_query_generation.py): Implementation of the CMA-ES-IG query generation algorithm.
-* [`cmaes_query_generation.py`](cmaesig_query_generation.py): Implementation of the CMA-ES query generation baseline algorithm.
+* [`cmaesig_query_generator.py`](cmaesig_query_generator.py): Implementation of the CMA-ES-IG query generation algorithm.
+* [`cmaes_query_generator.py`](cmaes_query_generator.py): Implementation of the CMA-ES query generation baseline algorithm.
 * [`preference-learning-from-selection/`](preference-learning-from-selection/): Submodule for preference learning library (contains InformationGain query generator implementation).
-* [`plot_comparisons.py`](plot_comparisons.py): Script to visualize simulated results.
+* [`generate_paper_data/plot_comparisons.py`](generate_paper_data/plot_comparisons.py): Script to visualize simulated results.
 * [`simulate_preferences.py`](simulate_preferences.py): Script to run preference simulation experiments.
 * [`requirements.txt`](requirements.txt): List of Python dependencies.
 
 * [`results/`](results/): Contains the cached experimental results from our simulations, including alignment and regret metrics for different algorithms and dimensionality settings.
 * [`interface/`](interface/): Contains the web interface used in our experiments.
-    * [`start_interface`](interface/start_interface): Script to launch the web interface.
+    * [`start_interface.py`](interface/start_interface.py): Script to launch the web interface.
     * [`static/`](interface/static/): Static files for the web interface (e.g., dummy data).
         * [`dummy_gestures.npy`](interface/static/dummy_gestures.npy): Dummy robot trajectories.
         * [`dummy_embeddings.npy`](interface/static/dummy_embeddings.npy): Dummy feature embeddings for trajectories.
@@ -39,13 +41,15 @@ Follow these steps to set up the repository:
 1.  **Clone the repository:**
     ```bash
     git clone https://github.com/interaction-lab/CMA-ES-IG.git
-    cd CMA-ES-IG
+    cd CMA-ES-IG/isrr2024
     ```
 
 2.  **Initialize submodules:**
     ```bash
-    git submodule update --init
+    git submodule update --init preference-learning-from-selection
     ```
+
+    All commands below are run from the `isrr2024/` folder.
 
 3.  **Set up a Conda environment (recommended):**
     ```bash
@@ -92,7 +96,7 @@ This repository includes the simulation data and scripts used in our publication
 A demonstration web interface is provided to provide a starting point for other people.
 
 * **Launch the Interface:**
-    From the top-level directory of the repository, run:
+    From the `isrr2024/` folder, run:
     ```bash
     python interface/start_interface.py
     ```
@@ -141,7 +145,7 @@ Contributions are welcome! Please follow standard practices: Fork the repository
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](../LICENSE) file for details.
 
 ## Citation
 

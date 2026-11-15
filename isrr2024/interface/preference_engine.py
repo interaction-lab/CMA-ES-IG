@@ -10,7 +10,7 @@ from irlpreference.query_generation import InfoGainQueryGenerator, RandomQueryGe
 from irlpreference.reward_parameterizations import MonteCarloLinearReward
 
 import sys
-sys.path.append('../CMA-ES-IG')
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from cmaes_query_generator import CMAESGenerator
 from cmaesig_query_generator import CMAESIGGenerator
 
