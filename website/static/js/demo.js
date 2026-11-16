@@ -3,6 +3,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 import URDFLoader from "urdf-loader";
 import { ALGORITHMS, ParticleBelief, RNG, standardise } from "./cmaesig.js";
 
@@ -56,11 +57,43 @@ function sampleTraj(traj, phase, out) {
 // ---------------------------------------------------------------------------
 // Scene
 // ---------------------------------------------------------------------------
+
+// Draw calls, not triangles, dominate on some GPUs (notably WebGL on Metal), so
+// meshes under `root` that share a material are merged into one mesh each.
+// Subtrees starting at an object in `stops` (moving joints) are left alone so
+// they can be merged separately. Only positions and normals are kept.
+function mergeStatic(root, stops = new Set()) {
+  root.updateMatrixWorld(true);
+  const toRoot = root.matrixWorld.clone().invert();
+  const found = [];
+  (function visit(o) {
+    for (const c of o.children) {
+      if (stops.has(c)) continue;
+      if (c.isMesh) found.push(c);
+      visit(c);
+    }
+  })(root);
+  const byMaterial = new Map();
+  for (const m of found) {
+    const g = m.geometry.clone().applyMatrix4(new THREE.Matrix4().multiplyMatrices(toRoot, m.matrixWorld));
+    for (const name of Object.keys(g.attributes)) if (name !== "position" && name !== "normal") g.deleteAttribute(name);
+    if (!byMaterial.has(m.material)) byMaterial.set(m.material, { geoms: [], src: m });
+    byMaterial.get(m.material).geoms.push(g);
+  }
+  for (const m of found) m.removeFromParent();
+  for (const [material, { geoms, src }] of byMaterial) {
+    const indexed = geoms.every((g) => g.index);
+    const merged = new THREE.Mesh(mergeGeometries(indexed ? geoms : geoms.map((g) => (g.index ? g.toNonIndexed() : g))), material);
+    merged.renderOrder = src.renderOrder;
+    merged.userData = { ...src.userData };
+    root.add(merged);
+  }
+}
 function makeMaterials() {
   return {
-    carbon: new THREE.MeshStandardMaterial({ color: 0x2a2c30, roughness: 0.45, metalness: 0.25 }),
-    ring: new THREE.MeshStandardMaterial({ color: 0xb9bcc2, roughness: 0.3, metalness: 0.8 }),
-    finger: new THREE.MeshStandardMaterial({ color: 0x3c3f45, roughness: 0.6, metalness: 0.1 }),
+    carbon: new THREE.MeshLambertMaterial({ color: 0x2a2c30 }),
+    ring: new THREE.MeshLambertMaterial({ color: 0xb9bcc2 }),
+    finger: new THREE.MeshLambertMaterial({ color: 0x3c3f45 }),
   };
 }
 
@@ -78,7 +111,7 @@ function loadRobot(materials) {
         if (obj) {
           const mat = /ring/.test(path) ? materials.ring : /finger/.test(path) ? materials.finger : materials.carbon;
           obj.traverse((c) => {
-            if (c.isMesh) { c.material = mat; c.castShadow = true; c.receiveShadow = true; }
+            if (c.isMesh) c.material = mat;
           });
         }
         done(obj, err);
@@ -104,12 +137,12 @@ function closeGripper(robot) {
 
 function makeCup() {
   const g = new THREE.Group();
-  const mat = new THREE.MeshStandardMaterial({ color: 0x2f6fd0, roughness: 0.45, side: THREE.DoubleSide });
+  const mat = new THREE.MeshLambertMaterial({ color: 0x2f6fd0, side: THREE.DoubleSide });
   const body = new THREE.Mesh(new THREE.CylinderGeometry(0.036, 0.03, 0.1, 32, 1, true), mat);
   const bottom = new THREE.Mesh(new THREE.CircleGeometry(0.03, 32), mat);
   bottom.rotation.x = Math.PI / 2;
   bottom.position.y = -0.05;
-  for (const m of [body, bottom]) { m.castShadow = true; g.add(m); }
+  g.add(body, bottom);
   // three.js cylinders run along +Y, across the gripper; +Z is the approach direction
   // and the palm ends at z = -0.039, so the cup sits just in front of it.
   g.position.set(0, 0, 0.02);
@@ -117,19 +150,18 @@ function makeCup() {
 }
 
 function makeTable(group) {
-  const top = new THREE.MeshStandardMaterial({ color: 0x8a6d55, roughness: 0.8 });
-  const leg = new THREE.MeshStandardMaterial({ color: 0x5c4838, roughness: 0.8 });
+  const top = new THREE.MeshLambertMaterial({ color: 0x8a6d55 });
+  const leg = new THREE.MeshLambertMaterial({ color: 0x5c4838 });
   const table = new THREE.Group();
   const t = new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.9, 0.04), top);
   t.position.set(0.3, 0.05, -0.02);
-  t.receiveShadow = true;
   table.add(t);
   for (const dx of [-0.12, 0.72]) for (const dy of [-0.34, 0.44]) {
     const l = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, 0.7), leg);
     l.position.set(dx, dy, -0.39);
-    l.castShadow = true;
     table.add(l);
   }
+  mergeStatic(table);
   group.add(table);
 }
 
@@ -142,8 +174,8 @@ const retime = (t) => t * t * t * (10 - 15 * t + 6 * t * t);
 const PERSON = { x: 1.02, y: -0.52 };
 const RIG_OFFSET = 0.35; // robot + table slide this far toward the person
 function makePerson(group) {
-  const ghost = new THREE.MeshStandardMaterial({ color: 0x7d8fa8, roughness: 0.7, transparent: true, opacity: 0.5, depthWrite: false });
-  const chairMat = new THREE.MeshStandardMaterial({ color: 0x5a5f66, roughness: 0.8, transparent: true, opacity: 0.45, depthWrite: false });
+  const ghost = new THREE.MeshLambertMaterial({ color: 0x7d8fa8, transparent: true, opacity: 0.5, depthWrite: false });
+  const chairMat = new THREE.MeshLambertMaterial({ color: 0x5a5f66, transparent: true, opacity: 0.45, depthWrite: false });
   const person = new THREE.Group();
   person.position.set(PERSON.x, PERSON.y, 0);
   const add = (geom, mat, x, y, z) => { const m = new THREE.Mesh(geom, mat); m.position.set(x, y, z); person.add(m); return m; };
@@ -166,6 +198,7 @@ function makePerson(group) {
   }
   for (const side of [-1, 1]) limb([0.02, 0.17 * side, 0.12], [0.08, 0.21 * side, -0.12], 0.04); // arms at sides
   person.traverse((c) => { c.renderOrder = 1; });
+  mergeStatic(person);
   const el = document.createElement("div");
   el.className = "you-label";
   el.textContent = "You";
@@ -196,8 +229,6 @@ export async function initDemo(container) {
   const DPR_STEPS = [Math.min(window.devicePixelRatio, 1.5), Math.min(window.devicePixelRatio, 1)];
   let dprStep = 0;
   renderer.setPixelRatio(DPR_STEPS[dprStep]);
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   viewport.appendChild(renderer.domElement);
   const labelRenderer = new CSS2DRenderer();
@@ -218,14 +249,9 @@ export async function initDemo(container) {
   scene.add(new THREE.HemisphereLight(0xffffff, 0xb9ab98, 1.6));
   const sun = new THREE.DirectionalLight(0xffffff, 2.2);
   sun.position.set(2.5, -1.5, 4);
-  sun.castShadow = true;
-  sun.shadow.mapSize.set(2048, 2048);
-  Object.assign(sun.shadow.camera, { left: -3, right: 3, top: 3, bottom: -3, near: 0.5, far: 12 });
-  sun.shadow.bias = -0.0005;
   scene.add(sun);
-  const floor = new THREE.Mesh(new THREE.PlaneGeometry(30, 30), new THREE.MeshStandardMaterial({ color: 0xe9e5dd, roughness: 1 }));
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(30, 30), new THREE.MeshLambertMaterial({ color: 0xe9e5dd }));
   floor.position.z = -0.74;
-  floor.receiveShadow = true;
   scene.add(floor);
   const grid = new THREE.GridHelper(12, 48, 0xd6d0c4, 0xdfdad0);
   grid.rotation.x = Math.PI / 2;
@@ -235,8 +261,13 @@ export async function initDemo(container) {
   setStatus("Loading the Jaco2 model…");
   const materials = makeMaterials();
   const baseRobot = await loadRobot(materials);
+  // The gripper stays closed around the cup, so everything between two moving arm
+  // joints is rigid: merge each such body into one mesh per material (21 -> ~12 meshes).
+  closeGripper(baseRobot);
+  baseRobot.links[EE_LINK].add(makeCup());
+  const armJoints = new Set(ARM_JOINTS.map((name) => baseRobot.joints[name]));
+  for (const body of [baseRobot, ...armJoints]) mergeStatic(body, armJoints);
   const helper = baseRobot.clone(); // used for forward kinematics only
-  closeGripper(helper);
 
   const lanes = LANES.map((spec, i) => {
     const group = new THREE.Group();
@@ -250,13 +281,11 @@ export async function initDemo(container) {
     group.add(rig);
     makeTable(rig);
     makePerson(group);
-    const plate = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 0.012, 40), new THREE.MeshStandardMaterial({ color: spec.color, roughness: 0.6 }));
+    const plate = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 0.012, 40), new THREE.MeshLambertMaterial({ color: spec.color }));
     plate.rotation.x = Math.PI / 2;
     plate.position.z = 0.006;
     rig.add(plate);
     const robot = baseRobot.clone();
-    closeGripper(robot);
-    robot.links[EE_LINK].add(makeCup());
     rig.add(robot);
     robot.traverse((c) => { if (c.isMesh) c.userData.lane = i; });
     const el = document.createElement("div");
@@ -351,7 +380,7 @@ export async function initDemo(container) {
       lane.trail.children[0].geometry.dispose();
       lane.trail.children[0].material.dispose();
     }
-    const mat = new THREE.MeshStandardMaterial({ color, roughness: 0.4, transparent: true, opacity: 0.85 });
+    const mat = new THREE.MeshLambertMaterial({ color, transparent: true, opacity: 0.85 });
     lane.trail = new THREE.Group();
     lane.trail.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 120, 0.006, 8, false), mat));
     for (const [p, r] of poses) {
@@ -361,6 +390,7 @@ export async function initDemo(container) {
       marker.add(new THREE.Mesh(shaftGeom, mat), new THREE.Mesh(coneGeom, mat));
       lane.trail.add(marker);
     }
+    mergeStatic(lane.trail); // tube + arrows -> one mesh (children[0], disposed above on the next query)
     lane.trail.visible = ui.paths.checked;
     lane.rig.add(lane.trail);
   }
@@ -583,8 +613,28 @@ export async function initDemo(container) {
     controls.update();
     renderer.render(scene, camera);
     labelRenderer.render(scene, camera);
+    if (debug) debug(now);
     requestAnimationFrame(frame);
   }
+
+  // Add ?debug to the URL for a performance readout (fps, pixel ratio, draw calls, GPU).
+  const debug = new URLSearchParams(location.search).has("debug") && (() => {
+    const el = document.createElement("pre");
+    el.style.cssText = "position:absolute;right:8px;bottom:8px;z-index:5;margin:0;padding:6px 8px;font:11px/1.4 ui-monospace,monospace;background:rgba(0,0,0,.72);color:#fff;border-radius:6px;pointer-events:none";
+    viewport.appendChild(el);
+    const gl = renderer.getContext();
+    const ext = gl.getExtension("WEBGL_debug_renderer_info");
+    const gpu = ext ? gl.getParameter(ext.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER);
+    window.__demo = { renderer, scene, lanes };
+    let frames = 0, since = performance.now();
+    return (now) => {
+      frames++;
+      if (now - since < 500) return;
+      const { calls, triangles } = renderer.info.render;
+      el.textContent = `${(1000 * frames / (now - since)).toFixed(0)} fps · ${renderer.getPixelRatio()}x\n${calls} draw calls · ${(triangles / 1000).toFixed(0)}k tris\n${gpu}`;
+      frames = 0; since = now;
+    };
+  })();
 
   reset();
   setView("All", true);
