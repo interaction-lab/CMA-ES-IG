@@ -54,7 +54,7 @@
   <link name="j2n6s300_link_base">
     <visual>
       <geometry>
-        <mesh filename="meshes/base.dae"/>
+        <mesh filename="meshes/base.glb"/>
       </geometry>
       <material name="carbon_fiber">
         <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
@@ -62,7 +62,7 @@
     </visual>
     <collision>
       <geometry>
-        <mesh filename="meshes/base.dae"/>
+        <mesh filename="meshes/base.glb"/>
       </geometry>
     </collision>
     <inertial>
@@ -81,7 +81,7 @@
   <link name="j2n6s300_link_1">
     <visual>
       <geometry>
-        <mesh filename="meshes/shoulder.dae"/>
+        <mesh filename="meshes/shoulder.glb"/>
       </geometry>
       <material name="carbon_fiber">
         <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
@@ -89,12 +89,12 @@
     </visual>
     <visual>
       <geometry>
-        <mesh filename="meshes/ring_big.dae"/>
+        <mesh filename="meshes/ring_big.glb"/>
       </geometry>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="meshes/shoulder.dae"/>
+        <mesh filename="meshes/shoulder.glb"/>
       </geometry>
     </collision>
     <inertial>
@@ -135,7 +135,7 @@
   <link name="j2n6s300_link_2">
     <visual>
       <geometry>
-        <mesh filename="meshes/arm.dae"/>
+        <mesh filename="meshes/arm.glb"/>
       </geometry>
       <material name="carbon_fiber">
         <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
@@ -143,12 +143,12 @@
     </visual>
     <visual>
       <geometry>
-        <mesh filename="meshes/ring_big.dae"/>
+        <mesh filename="meshes/ring_big.glb"/>
       </geometry>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="meshes/arm.dae"/>
+        <mesh filename="meshes/arm.glb"/>
       </geometry>
     </collision>
     <inertial>
@@ -189,7 +189,7 @@
   <link name="j2n6s300_link_3">
     <visual>
       <geometry>
-        <mesh filename="meshes/forearm.dae"/>
+        <mesh filename="meshes/forearm.glb"/>
       </geometry>
       <material name="carbon_fiber">
         <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
@@ -197,12 +197,12 @@
     </visual>
     <visual>
       <geometry>
-        <mesh filename="meshes/ring_big.dae"/>
+        <mesh filename="meshes/ring_big.glb"/>
       </geometry>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="meshes/forearm.dae"/>
+        <mesh filename="meshes/forearm.glb"/>
       </geometry>
     </collision>
     <inertial>
@@ -243,7 +243,7 @@
   <link name="j2n6s300_link_4">
     <visual>
       <geometry>
-        <mesh filename="meshes/wrist.dae"/>
+        <mesh filename="meshes/wrist.glb"/>
       </geometry>
       <material name="carbon_fiber">
         <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
@@ -251,12 +251,12 @@
     </visual>
     <visual>
       <geometry>
-        <mesh filename="meshes/ring_small.dae"/>
+        <mesh filename="meshes/ring_small.glb"/>
       </geometry>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="meshes/wrist.dae"/>
+        <mesh filename="meshes/wrist.glb"/>
       </geometry>
     </collision>
     <inertial>
@@ -297,7 +297,7 @@
   <link name="j2n6s300_link_5">
     <visual>
       <geometry>
-        <mesh filename="meshes/wrist.dae"/>
+        <mesh filename="meshes/wrist.glb"/>
       </geometry>
       <material name="carbon_fiber">
         <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
@@ -305,12 +305,12 @@
     </visual>
     <visual>
       <geometry>
-        <mesh filename="meshes/ring_small.dae"/>
+        <mesh filename="meshes/ring_small.glb"/>
       </geometry>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="meshes/wrist.dae"/>
+        <mesh filename="meshes/wrist.glb"/>
       </geometry>
     </collision>
     <inertial>
@@ -351,7 +351,7 @@
   <link name="j2n6s300_link_6">
     <visual>
       <geometry>
-        <mesh filename="meshes/hand_3finger.dae"/>
+        <mesh filename="meshes/hand_3finger.glb"/>
       </geometry>
       <material name="carbon_fiber">
         <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
@@ -359,12 +359,12 @@
     </visual>
     <visual>
       <geometry>
-        <mesh filename="meshes/ring_small.dae"/>
+        <mesh filename="meshes/ring_small.glb"/>
       </geometry>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="meshes/hand_3finger.dae"/>
+        <mesh filename="meshes/hand_3finger.glb"/>
       </geometry>
     </collision>
     <inertial>
@@ -412,7 +412,7 @@
   <link name="j2n6s300_link_finger_1">
     <visual>
       <geometry>
-        <mesh filename="meshes/finger_proximal.dae"/>
+        <mesh filename="meshes/finger_proximal.glb"/>
       </geometry>
       <material name="carbon_fiber">
         <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
@@ -420,7 +420,7 @@
     </visual>
     <collision>
       <geometry>
-        <mesh filename="meshes/finger_proximal.dae"/>
+        <mesh filename="meshes/finger_proximal.glb"/>
       </geometry>
     </collision>
     <inertial>
@@ -449,7 +449,7 @@
   <link name="j2n6s300_link_finger_tip_1">
     <visual>
       <geometry>
-        <mesh filename="meshes/finger_distal.dae"/>
+        <mesh filename="meshes/finger_distal.glb"/>
       </geometry>
       <material name="carbon_fiber">
         <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
@@ -457,7 +457,7 @@
     </visual>
     <collision>
       <geometry>
-        <mesh filename="meshes/finger_distal.dae"/>
+        <mesh filename="meshes/finger_distal.glb"/>
       </geometry>
     </collision>
     <inertial>
@@ -486,7 +486,7 @@
   <link name="j2n6s300_link_finger_2">
     <visual>
       <geometry>
-        <mesh filename="meshes/finger_proximal.dae"/>
+        <mesh filename="meshes/finger_proximal.glb"/>
       </geometry>
       <material name="carbon_fiber">
         <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
@@ -494,7 +494,7 @@
     </visual>
     <collision>
       <geometry>
-        <mesh filename="meshes/finger_proximal.dae"/>
+        <mesh filename="meshes/finger_proximal.glb"/>
       </geometry>
     </collision>
     <inertial>
@@ -523,7 +523,7 @@
   <link name="j2n6s300_link_finger_tip_2">
     <visual>
       <geometry>
-        <mesh filename="meshes/finger_distal.dae"/>
+        <mesh filename="meshes/finger_distal.glb"/>
       </geometry>
       <material name="carbon_fiber">
         <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
@@ -531,7 +531,7 @@
     </visual>
     <collision>
       <geometry>
-        <mesh filename="meshes/finger_distal.dae"/>
+        <mesh filename="meshes/finger_distal.glb"/>
       </geometry>
     </collision>
     <inertial>
@@ -560,7 +560,7 @@
   <link name="j2n6s300_link_finger_3">
     <visual>
       <geometry>
-        <mesh filename="meshes/finger_proximal.dae"/>
+        <mesh filename="meshes/finger_proximal.glb"/>
       </geometry>
       <material name="carbon_fiber">
         <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
@@ -568,7 +568,7 @@
     </visual>
     <collision>
       <geometry>
-        <mesh filename="meshes/finger_proximal.dae"/>
+        <mesh filename="meshes/finger_proximal.glb"/>
       </geometry>
     </collision>
     <inertial>
@@ -597,7 +597,7 @@
   <link name="j2n6s300_link_finger_tip_3">
     <visual>
       <geometry>
-        <mesh filename="meshes/finger_distal.dae"/>
+        <mesh filename="meshes/finger_distal.glb"/>
       </geometry>
       <material name="carbon_fiber">
         <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
@@ -605,7 +605,7 @@
     </visual>
     <collision>
       <geometry>
-        <mesh filename="meshes/finger_distal.dae"/>
+        <mesh filename="meshes/finger_distal.glb"/>
       </geometry>
     </collision>
     <inertial>

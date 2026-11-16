@@ -155,7 +155,8 @@ details[open] summary { margin-bottom: 8px; }
 
 /* ---------- method / results ---------- */
 .steps { list-style: none; padding: 0; margin: 18px 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
-.steps li { display: flex; gap: 12px; background: var(--band); border: 1px solid var(--line); border-radius: 14px; padding: 14px; }
+.steps li { display: grid; grid-template-columns: 28px minmax(0, 1fr); grid-template-rows: auto 1fr; gap: 10px 12px; background: var(--band); border: 1px solid var(--line); border-radius: 14px; padding: 14px; }
+.steps li > .step-fig { grid-column: 1 / -1; align-self: end; justify-self: center; width: 100%; max-width: 300px; height: auto; display: block; margin-top: 4px; }
 .steps li > span { flex: none; width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: #fff; display: grid; place-items: center; font-weight: 700; font-size: 0.9rem; }
 .steps b { display: block; margin-bottom: 2px; }
 .steps p { margin: 0; font-size: 0.9rem; color: var(--muted); line-height: 1.5; }

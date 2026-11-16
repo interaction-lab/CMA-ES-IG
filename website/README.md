@@ -12,7 +12,8 @@ website/
 │   ├── css/style.css
 │   ├── data/handovers.f32  # 1000 x 50 x 6 Jaco2 joint trajectories (float32, from applications/robot_handover/handovers.npy)
 │   ├── data/embeddings.f32 # 1000 x 8 autoencoder features (float32, from handover_embeddings.npy)
-│   ├── robot/j2n6s300/     # Kinova j2n6s300 URDF + meshes from kinova-ros (BSD-3, see LICENSE)
+│   ├── robot/j2n6s300/     # Kinova j2n6s300 URDF from kinova-ros (BSD-3, see LICENSE); meshes simplified to ~15% of the
+│   │                       #   original triangles and converted from .dae to .glb to keep the demo light
 │   ├── images/             # figures extracted from the paper
 │   └── cma-es-ig.pdf
 ```

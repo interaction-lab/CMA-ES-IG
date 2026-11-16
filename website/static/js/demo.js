@@ -2,6 +2,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer.js";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import URDFLoader from "urdf-loader";
 import { ALGORITHMS, ParticleBelief, RNG, standardise } from "./cmaesig.js";
 
@@ -67,8 +68,13 @@ function loadRobot(materials) {
   return new Promise((resolve, reject) => {
     const manager = new THREE.LoadingManager();
     const loader = new URDFLoader(manager);
+    // Meshes are low-poly GLB versions of the kinova-ros Collada files.
+    const gltf = new GLTFLoader(manager);
+    const loadMesh = (path, mgr, cb) => /\.glb$/i.test(path)
+      ? gltf.load(path, (g) => cb(g.scene), undefined, (e) => cb(null, e))
+      : loader.defaultMeshLoader(path, mgr, cb);
     loader.loadMeshCb = (path, mgr, done) => {
-      loader.defaultMeshLoader(path, mgr, (obj, err) => {
+      loadMesh(path, mgr, (obj, err) => {
         if (obj) {
           const mat = /ring/.test(path) ? materials.ring : /finger/.test(path) ? materials.finger : materials.carbon;
           obj.traverse((c) => {
@@ -184,8 +190,12 @@ export async function initDemo(container) {
   const features = standardise(Array.from({ length: N_TRAJ }, (_, i) => Array.from(embRaw.subarray(i * FEAT, (i + 1) * FEAT))));
 
   // --- renderer / scene -----------------------------------------------------
-  const renderer = new THREE.WebGLRenderer({ antialias: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+  // The scene is limited by pixels drawn, not geometry, so the pixel ratio is the
+  // main cost. Start at up to 1.5x and drop to 1x if frames run long (see frame()).
+  const DPR_STEPS = [Math.min(window.devicePixelRatio, 1.5), Math.min(window.devicePixelRatio, 1)];
+  let dprStep = 0;
+  renderer.setPixelRatio(DPR_STEPS[dprStep]);
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -523,7 +533,41 @@ export async function initDemo(container) {
   resize();
 
   // --- animation loop -----------------------------------------------------------
+  // Frame times are collected in windows; if more than 10% of the frames in a
+  // window took longer than 20 ms (i.e. missed a 60 Hz vsync), step the pixel
+  // ratio down. The first window after (re)starting is skipped because it
+  // includes shader compilation.
+  const FRAME_WINDOW = 90, SLOW_FRAME_MS = 20;
+  let frameTimes = [], lastFrame = null, warmup = true;
+  function trackFrameTime(now) {
+    if (lastFrame !== null && !state.busy) frameTimes.push(now - lastFrame);
+    lastFrame = now;
+    if (frameTimes.length < FRAME_WINDOW) return;
+    const slowShare = frameTimes.filter((t) => t > SLOW_FRAME_MS).length / frameTimes.length;
+    frameTimes = [];
+    if (warmup) { warmup = false; return; }
+    if (slowShare > 0.1 && dprStep < DPR_STEPS.length - 1 && DPR_STEPS[dprStep + 1] < DPR_STEPS[dprStep]) {
+      renderer.setPixelRatio(DPR_STEPS[++dprStep]);
+      resize();
+    }
+  }
+
+  // Only render while the demo is on screen and the tab is visible.
+  let onScreen = true, running = false;
+  function start() {
+    if (running || !onScreen || document.hidden) return;
+    running = true;
+    lastFrame = null;
+    frameTimes = [];
+    warmup = true;
+    requestAnimationFrame(frame);
+  }
+  new IntersectionObserver(([entry]) => { onScreen = entry.isIntersecting; start(); }).observe(viewport);
+  document.addEventListener("visibilitychange", start);
+
   function frame(now) {
+    if (!onScreen || document.hidden) { running = false; return; }
+    trackFrameTime(now);
     const duration = (REAL_DURATION / state.speed) * 1000;
     const phase = Math.min(((now - state.restartAt) % (duration + HOLD * 1000)) / duration, 1);
     for (const lane of lanes) {
@@ -546,7 +590,7 @@ export async function initDemo(container) {
   setView("All", true);
   status.hidden = true;
   container.classList.add("ready");
-  requestAnimationFrame(frame);
+  start();
 }
 
 const container = document.querySelector("#demo");
